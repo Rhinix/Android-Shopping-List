@@ -1,7 +1,7 @@
 {
   "env": {
-    "MONGO_ATLAS_USER": "",
-    "MONGO_ATLAS_PSWD": "",
+    "MONGO_ATLAS_USER": "Amella",
+    "MONGO_ATLAS_PSWD": "node-shop",
     "JWT_KEY": ""
   }
 }
