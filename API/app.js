@@ -5,6 +5,7 @@ const bodyparser = require("body-parser");
 const mongoose = require("mongoose");
 
 const userRoutes = require("./api/routes/user");
+const shoppingListRoutes = require("./api/routes/shoppingList");
 
 const connectionString =
   "mongodb+srv://" +
@@ -29,7 +30,7 @@ app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
 app.use("/user", userRoutes);
-
+app.use("/shoppingList", shoppingListRoutes);
 //handling error
 app.use((req, res, next) => {
   const error = new Error("Not Found");

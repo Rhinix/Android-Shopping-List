@@ -6,7 +6,8 @@ const mongoose = require("mongoose");
 const User = require("../models/user");
 
 /*
-    POST required fields:
+    POST /user/signup  
+    required fields:
         email
         password
 */
