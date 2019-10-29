@@ -11,7 +11,7 @@ const ShoppingList = require("../models/shoppingList");
 */
 router.get("/", (req, res) => {
   ShoppingList.find()
-    .select("itemList _id name")
+    .select("itemList.name itemList._id itemList.qte _id name")
     .exec()
     .then(result => {
       if (result) {
@@ -63,6 +63,10 @@ router.post("/", (req, res) => {
     itemList: req.body.itemList
   });
 
+  shoppingList.itemList.forEach(element => {
+    element._id = new mongoose.Types.ObjectId();
+  });
+
   shoppingList
     .save()
     .then(result => {
@@ -90,4 +94,37 @@ router.delete("/:listId", (req, res) => {
       res.status(500).json({ error: err });
     });
 });
+
+/*
+  PATCH /shoppingList/updateList:listId
+  require an array with the modified field + their new values
+  ex:
+    [
+      {
+        "propName":"name",
+        "value":"test"
+      },
+      {
+        "propName":"listItem.<index du produit>.<propName>",
+        "value":"njn"
+      }
+    ]
+*/
+
+router.patch("/updateList:listId", (req, res) => {
+  const id = req.params.listId;
+  const updateOps = {};
+  for (const ops of req.body.set) {
+    updateOps[ops.propName] = ops.value;
+  }
+  ShoppingList.findByIdAndUpdate(id, { $set: updateOps })
+    .exec()
+    .then(result => {
+      res.status(200).json({ message: "List updated" });
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+});
+
 module.exports = router;
