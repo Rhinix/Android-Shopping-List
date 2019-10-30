@@ -33,7 +33,7 @@ router.get("/", (req, res) => {
     get list by id
 */
 router.get("/:listId", (req, res) => {
-  const id = req.params.listId;
+  let id = req.params.listId;
   ShoppingList.findById(id)
     .select("_id name itemList")
     .exec()
@@ -57,7 +57,7 @@ router.get("/:listId", (req, res) => {
     itemlist[]
 */
 router.post("/", (req, res) => {
-  const shoppingList = new ShoppingList({
+  let shoppingList = new ShoppingList({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     itemList: req.body.itemList
@@ -84,7 +84,7 @@ router.post("/", (req, res) => {
     delete list by id
 */
 router.delete("/:listId", (req, res) => {
-  const id = req.params.listId;
+  let id = req.params.listId;
   ShoppingList.deleteOne({ _id: id })
     .exec()
     .then(result => {
@@ -99,24 +99,30 @@ router.delete("/:listId", (req, res) => {
   PATCH /shoppingList/updateList:listId
   require an array with the modified field + their new values
   ex:
-    [
-      {
-        "propName":"name",
-        "value":"test"
-      },
-      {
-        "propName":"listItem.<index du produit>.<propName>",
-        "value":"njn"
-      }
-    ]
+    {
+      "shoppingListProperties":[],
+      "articlesListProperties":[]
+    }
 */
 
-router.patch("/updateList:listId", (req, res) => {
-  const id = req.params.listId;
-  const updateOps = {};
-  for (const ops of req.body.set) {
-    updateOps[ops.propName] = ops.value;
+router.patch("/updateList/:listId", (req, res) => {
+  let id = req.params.listId;
+  let updateOps = {};
+
+  if (req.body.shoppingListProperties) {
+    for (let ops of req.body.shoppingListProperties) {
+      updateOps[ops.propName] = ops.value;
+    }
   }
+
+  if (req.body.articlesListProperties) {
+    let propName;
+    for (let ops of req.body.articlesListProperties) {
+      propName = "itemList." + ops.articleIndex + "." + ops.propName;
+      updateOps[propName] = ops.value;
+    }
+  }
+
   ShoppingList.findByIdAndUpdate(id, { $set: updateOps })
     .exec()
     .then(result => {
@@ -127,4 +133,40 @@ router.patch("/updateList:listId", (req, res) => {
     });
 });
 
+router.patch("/deleteArticle/:listId", (req, res) => {
+  let id = req.params.listId;
+  let deleteArtcilesId = req.body;
+
+  ShoppingList.findByIdAndUpdate(id, {
+    $pull: { itemList: { _id: { $in: deleteArtcilesId } } }
+  })
+    .exec()
+    .then(result => {
+      res.status(200).json({ message: "Article(s) deleted" });
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+});
+
+//ToDo patch request for adding articles in itemList
+router.patch("/addArticle/:listId", (req, res) => {
+  let id = req.params.listId;
+  let newArticle = req.body;
+
+  newArticle.forEach(element => {
+    element._id = new mongoose.Types.ObjectId();
+  });
+
+  ShoppingList.findByIdAndUpdate(id, {
+    $addToSet: { itemList: { $each: newArticle } }
+  })
+    .exec()
+    .then(result => {
+      res.status(200).json({ message: "Article(s) added" });
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+});
 module.exports = router;
