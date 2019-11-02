@@ -6,19 +6,7 @@ const shoppingListSchema = mongoose.Schema({
     required: true,
     type: String
   },
-  itemList: [
-    {
-      _id: mongoose.Schema.Types.ObjectId,
-      name: {
-        required: true,
-        type: String
-      },
-      qte: {
-        required: true,
-        type: String
-      }
-    }
-  ]
+  articlesList: [{ type: mongoose.Schema.Types.ObjectId, ref: "article" }]
 });
 
-module.exports = mongoose.model("shoppingList", shoppingListSchema);
+module.exports = mongoose.model("ShoppingList", shoppingListSchema);
