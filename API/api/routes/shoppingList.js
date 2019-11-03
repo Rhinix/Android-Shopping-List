@@ -113,10 +113,6 @@ router.delete("/:listId", (req, res) => {
     });
 });
 
-//added
-//modified
-//deleted
-
 router.patch("/:listId", (req, res) => {
   let id = req.params.listId;
 
