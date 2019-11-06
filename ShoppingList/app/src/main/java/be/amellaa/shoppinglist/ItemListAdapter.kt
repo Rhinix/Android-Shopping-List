@@ -51,9 +51,9 @@ class ItemListAdapter(context: Context, val arrayListDetails:ArrayList<ShoppingI
         public val linearLayout: LinearLayout
 
         init {
-            this.tvId = row?.findViewById<TextView>(R.id.tvId) as TextView
-            this.tvName = row?.findViewById<TextView>(R.id.tvName) as TextView
-            this.linearLayout = row?.findViewById<LinearLayout>(R.id.linearLayout) as LinearLayout
+            this.tvId = row?.findViewById<TextView>(R.id.shoppingListId) as TextView
+            this.tvName = row?.findViewById<TextView>(R.id.shoppingListName) as TextView
+            this.linearLayout = row?.findViewById<LinearLayout>(R.id.coordinatorShoppingList) as LinearLayout
         }
     }
 

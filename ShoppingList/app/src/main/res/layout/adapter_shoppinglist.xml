@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:id="@+id/linearLayout"
-              android:padding="5dp"
-              android:orientation="vertical">
+              android:id="@+id/coordinatorShoppingList"
+              android:padding="5dp">
+    <androidx.cardview.widget.CardView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/cardShoppingList">
+        <!--<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/shoppingListId"
+                android:text="ttt"
+                android:layout_margin="5dp"
+                android:textSize="16sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/shoppingListName"
+                android:text="ttt"
+                android:textSize="16sp"
+                android:layout_margin="5dp"/>
+        </LinearLayout>-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/shoppingListName"
+            android:text="ttt"
+            android:layout_margin="5dp"
+            android:textSize="16sp"/>
+    </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvId"
-        android:layout_margin="5dp"
-        android:textSize="16dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvName"
-        android:textSize="16dp"
-        android:layout_margin="5dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvEmail"
-        android:layout_margin="5dp"
-        android:textSize="16dp"/>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,7 +1,6 @@
 package be.amellaa.shoppinglist
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.widget.ListView
 import be.amellaa.shoppinglist.models.ShoppingList
@@ -19,7 +18,7 @@ class ItemListActivity : Activity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list)
+        setContentView(R.layout.activity_listitem)
         listView_details = findViewById<ListView>(R.id.listView) as ListView
         /*listView_details.setOnItemClickListener { parent, view, position, id ->
             val intent : Intent = Intent(this, ItemListActivity::class.java)
@@ -27,7 +26,7 @@ class ItemListActivity : Activity()
             startActivity(intent)
         }*/
         if(intent != null) {
-            run("http://192.168.1.38:3000/shoppinglist/"+intent.getStringExtra("listId"))
+            run("http://192.168.13.155:3000/shoppinglist/"+intent.getStringExtra("listId"))
         }
     }
 
@@ -54,8 +53,8 @@ class ItemListActivity : Activity()
                 }
                 runOnUiThread {
                     //stuff that updates ui
-                    val obj_adapter : ListActivityAdapter = ListActivityAdapter(applicationContext,arrayList_details)
-                    listView_details.adapter=obj_adapter
+                    val obj_adapterShopping : ShoppingListAdapter = ShoppingListAdapter(applicationContext,arrayList_details)
+                    listView_details.adapter=obj_adapterShopping
                 }
             }
         })
