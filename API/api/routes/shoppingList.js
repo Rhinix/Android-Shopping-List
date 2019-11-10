@@ -9,7 +9,7 @@ const Article = require("../models/article");
 
 router.get("/MyLists", checkAuth, (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
-  const userId = jwt.decode(token).userId;
+  const userId = mongoose.Types.ObjectId(jwt.decode(token).userId);
 
   ShoppingList.find()
     .where("owner")
