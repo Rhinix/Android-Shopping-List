@@ -1,60 +1,51 @@
 package be.amellaa.shoppinglist
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import be.amellaa.shoppinglist.models.ShoppingItem
 
-class ItemListAdapter(context: Context, val arrayListDetails:ArrayList<ShoppingItem>) : BaseAdapter()
+class ItemListAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.Adapter<ItemListAdapter.ListRowHolder>()
 {
 
-    private val layoutInflater : LayoutInflater = LayoutInflater.from(context)
-
-    override fun getItem(position: Int): Any {
-        return arrayListDetails[position]
+    override fun getItemCount(): Int {
+        return values.size;
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
+    override fun onBindViewHolder(holder: ListRowHolder, position: Int) {
+        val shoppingList : ShoppingItem = values[position]
+        holder.bind(shoppingList)
     }
 
-    override fun getCount(): Int {
-        return arrayListDetails.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListRowHolder {
+        var layoutInflater : LayoutInflater = LayoutInflater.from(parent.context)
+        return ListRowHolder(layoutInflater, parent);
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        val view: View?
-        val listRowHolder: ListRowHolder
-        if (convertView == null) {
-            view = this.layoutInflater.inflate(R.layout.adapter_shoppinglist, parent, false)
-            listRowHolder = ListRowHolder(view)
-            if (view != null) {
-                view.tag = listRowHolder
-            }
-        } else {
-            view = convertView
-            listRowHolder = view.tag as ListRowHolder
-        }
-
-        listRowHolder.tvName.text = arrayListDetails.get(position).name
-        listRowHolder.tvId.text = arrayListDetails.get(position).id
-        return view
-    }
-
-    private class ListRowHolder(row: View?) {
-        public val tvName: TextView
-        public val tvId: TextView
-        public val linearLayout: LinearLayout
+    class ListRowHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.holder_listitem, parent, false))
+    {
+        lateinit var mShoppingItem: ShoppingItem
+        lateinit var mNameTextView : TextView
+        lateinit var mIdTextView : TextView
 
         init {
-            this.tvId = row?.findViewById<TextView>(R.id.shoppingListId) as TextView
-            this.tvName = row?.findViewById<TextView>(R.id.shoppingListName) as TextView
-            this.linearLayout = row?.findViewById<LinearLayout>(R.id.coordinatorShoppingList) as LinearLayout
+            mNameTextView = itemView.findViewById(R.id.itemName)
+            mIdTextView = itemView.findViewById(R.id.itemId)
         }
+
+        fun bind(shoppingItem: ShoppingItem)
+        {
+            mShoppingItem = shoppingItem
+            mNameTextView.text = shoppingItem.name;
+            mIdTextView.text = shoppingItem.id;
+        }
+
     }
 
 }

@@ -1,92 +1,54 @@
 package be.amellaa.shoppinglist
 
 import android.content.Context
-import android.util.Log
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat.startActivity
+import androidx.recyclerview.widget.RecyclerView
 import be.amellaa.shoppinglist.models.ShoppingList
-import com.google.android.material.behavior.SwipeDismissBehavior
 
-class ShoppingListAdapter(context: Context, val arrayListDetails:ArrayList<ShoppingList>) : BaseAdapter()
+class ShoppingListAdapter(val values : ArrayList<ShoppingList>) : RecyclerView.Adapter<ShoppingListAdapter.ListRowHolder>()
 {
 
-    private val layoutInflater : LayoutInflater = LayoutInflater.from(context)
-
-    override fun getItem(position: Int): Any {
-        return arrayListDetails[position]
+    override fun getItemCount(): Int {
+        return values.size;
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
+    override fun onBindViewHolder(holder: ListRowHolder, position: Int) {
+        val shoppingList : ShoppingList = values[position]
+        holder.bind(shoppingList)
     }
 
-    override fun getCount(): Int {
-        return arrayListDetails.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListRowHolder {
+        var layoutInflater : LayoutInflater = LayoutInflater.from(parent.context)
+        return ListRowHolder(layoutInflater, parent);
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-        val view: View?
-        val listRowHolder: ListRowHolder
-        if (convertView == null) {
-            view = this.layoutInflater.inflate(R.layout.adapter_shoppinglist, parent, false)
-            listRowHolder = ListRowHolder(view)
-            if (view != null) {
-                view.tag = listRowHolder
-            }
-        } else {
-            view = convertView
-            listRowHolder = view.tag as ListRowHolder
-        }
-
-        listRowHolder.shoppingListName.text = arrayListDetails[position].name
-        //listRowHolder.shoppingListId.text = arrayListDetails[position].id
-        val swipe : SwipeDismissBehavior<CardView> = SwipeDismissBehavior()
-        swipe.setSwipeDirection(SwipeDismissBehavior.SWIPE_DIRECTION_START_TO_END)
-        swipe.setListener(object : SwipeDismissBehavior.OnDismissListener{
-            override fun onDragStateChanged(state: Int) {
-                Log.d("swipe", "onDragStateChanged: state=$state")
-            }
-
-            override fun onDismiss(view: View) {
-                Log.d("swipe", "onDismiss")
-            }
-
-        })
-        (listRowHolder.linearLayout.layoutParams as CoordinatorLayout.LayoutParams).behavior = swipe
-        listRowHolder.coordinatorLayout.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> Log.d("swipe", "ACTION_DOWN")//Do Something
-                    MotionEvent.ACTION_UP -> v?.performClick()
-                }
-
-                return v?.onTouchEvent(event) ?: true
-            }
-        })
-        listRowHolder.coordinatorLayout.setOnS
-        //listRowHolder.coordinatorLayout.setOnTouchListener(View.OnTouchListener { v, event -> swipe.onTouchEvent(listRowHolder.coordinatorLayout, listRowHolder.linearLayout, event) })
-        return view
-    }
-
-    private class ListRowHolder(row: View?) {
-
-        val shoppingListName: TextView
-        //val shoppingListId: TextView
-        val linearLayout: CardView
-        val coordinatorLayout : CoordinatorLayout
+    public class ListRowHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.holder_shoppinglist, parent, false))
+    {
+        lateinit var mShoppingList: ShoppingList
+        lateinit var mNameTextView : TextView
+        lateinit var mIdTextView : TextView
 
         init {
-            //this.shoppingListId = row?.findViewById<TextView>(R.id.shoppingListId) as TextView
-            this.shoppingListName = row?.findViewById<TextView>(R.id.shoppingListName) as TextView
-            this.linearLayout = row.findViewById<CardView>(R.id.cardShoppingList) as CardView
-            this.coordinatorLayout = row.findViewById(R.id.coordinatorShoppingList) as CoordinatorLayout
+            mNameTextView = itemView.findViewById(R.id.shoppingListName)
+            mIdTextView = itemView.findViewById(R.id.shoppingListId)
+            itemView.setOnClickListener { v ->
+                val intent : Intent = Intent(parent.context, ItemListActivity::class.java)
+                intent.putExtra("listId", mShoppingList.id)
+                parent.context.startActivity(intent)
+            }
+        }
+
+        fun bind(shoppingList: ShoppingList)
+        {
+            mShoppingList = shoppingList
+            mNameTextView.text = shoppingList.name;
+            mIdTextView.text = shoppingList.id;
         }
     }
 

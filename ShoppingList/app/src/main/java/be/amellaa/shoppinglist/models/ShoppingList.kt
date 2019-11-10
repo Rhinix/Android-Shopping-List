@@ -4,4 +4,5 @@ class ShoppingList
 {
     lateinit var id:String
     lateinit var name:String
+    var nbArticles: Int? = null
 }
