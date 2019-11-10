@@ -1,12 +1,19 @@
 const express = require("express");
 const router = express();
 const mongoose = require("mongoose");
+const checkAuth = require("../middleware/check-auth");
+const jwt = require("jsonwebtoken");
 
 const ShoppingList = require("../models/shoppingList");
 const Article = require("../models/article");
 
-router.get("/", (req, res) => {
+router.get("/MyLists", checkAuth, (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const userId = jwt.decode(token).userId;
+
   ShoppingList.find()
+    .where("owner")
+    .equals(userId)
     .select(" _id name articlesList")
     .exec()
     .then(result => {
@@ -35,7 +42,44 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:listId", (req, res) => {
+router.get("/SharedLists", checkAuth, (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const userId = jwt.decode(token).userId;
+  const filter = { users: mongoose.Types.ObjectId(userId) };
+  console.log(filter);
+
+  ShoppingList.find(filter)
+    .select("_id name articlesList")
+    .exec()
+    .then(result => {
+      if (result) {
+        console.log(result);
+
+        let shoppingListArray = [];
+        let newShoppingList;
+
+        result.forEach(shoppingList => {
+          newShoppingList = {
+            name: shoppingList.name,
+            _id: shoppingList._id,
+            nbArticles: shoppingList.articlesList.length
+          };
+          shoppingListArray.push(newShoppingList);
+        });
+
+        res.status(200).json(shoppingListArray);
+      } else {
+        res.status(404).json({
+          message: "there is no list"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+});
+
+router.get("/:listId", checkAuth, (req, res) => {
   let id = req.params.listId;
 
   ShoppingList.findById(id)
@@ -56,7 +100,10 @@ router.get("/:listId", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/", checkAuth, (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const userId = jwt.decode(token).userId;
+
   let listName = req.body.name;
   let articlesList = req.body.articlesList;
 
@@ -78,6 +125,8 @@ router.post("/", (req, res) => {
 
   let shoppingList = new ShoppingList({
     _id: new mongoose.Types.ObjectId(),
+    owner: userId,
+    user: [],
     name: listName,
     articlesList: articlesList
   });
@@ -93,7 +142,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.delete("/:listId", (req, res) => {
+router.delete("/:listId", checkAuth, (req, res) => {
   let id = req.params.listId;
   ShoppingList.findByIdAndDelete(id)
     .populate("articlesList", "name _id qty")
@@ -113,7 +162,25 @@ router.delete("/:listId", (req, res) => {
     });
 });
 
-router.patch("/:listId", (req, res) => {
+router.patch("/StopShared/:listId", checkAuth, (req, res) => {
+  let id = req.params.listId;
+  let deletedUserId = req.body.userId;
+
+  console.log("deletedId: " + deletedUserId);
+
+  ShoppingList.findByIdAndUpdate(id, {
+    $pull: { users: deletedUserId }
+  })
+    .exec()
+    .then(result => {
+      res.status(200).json({ message: "Sharing stop", res: result });
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+});
+
+router.patch("/:listId", checkAuth, (req, res) => {
   let id = req.params.listId;
 
   let addedArticles = req.body.addedArticles;

@@ -31,6 +31,7 @@ app.use(bodyparser.json());
 
 app.use("/user", userRoutes);
 app.use("/shoppingList", shoppingListRoutes);
+
 //handling error
 app.use((req, res, next) => {
   const error = new Error("Not Found");
