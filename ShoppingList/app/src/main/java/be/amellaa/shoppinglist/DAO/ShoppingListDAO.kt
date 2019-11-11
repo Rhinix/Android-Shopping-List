@@ -16,29 +16,81 @@ class ShoppingListDAO {
     companion object {
         val instance = ShoppingListDAO()
         val httpClient = OkHttpClient()
-        val DOMAIN_URL = "http://192.168.0.22:3000"
-        val USER_LOGIN_URL = "/user/login/"
-        val USER_SIGNUP_URL = "/user/signup/"
-        val SHOPPINGLIST_URL = "/shoppingList/"
-        val MY_LIST_URL = "/shoppingList/MyLists/"
-        val SHARED_LIST_URL = "/shoppingList/SharedList/"
-        var TOKEN =
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1haWwyQGduZS5jb20iLCJ1c2VySWQiOiI1ZGM3ZmY5OTI1MjhkYjA1OWMzZGE5MmUiLCJpYXQiOjE1NzM0NjkyMzJ9.JhALm7upsZY5-zqj-Baee4Ez8VBiseC_FI4TnO7aYso"
+        const val DOMAIN_URL = "http://192.168.0.15:3000"
+        const val USER_LOGIN_URL = "/user/login/"
+        const val USER_SIGNUP_URL = "/user/signup/"
+        const val SHOPPINGLIST_URL = "/shoppingList/"
+        const val MY_LIST_URL = "/shoppingList/MyLists/"
+        const val SHARED_LIST_URL = "/shoppingList/SharedList/"
+        var TOKEN = ""
     }
 
-    fun login(user: User) {
+    fun login(user: User): Int {
+        val body = FormBody.Builder()
+            .add("email", user.email)
+            .add("password", user.password)
+            .build()
+
         val request = Request.Builder()
+            .post(body)
             .url(DOMAIN_URL + USER_LOGIN_URL)
             .build()
 
+        var returnCode = Int.MAX_VALUE
+
+        val countDownLatch: CountDownLatch = CountDownLatch(1)
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+
+                val res = response.body()!!.string()
+                val jsonObject = JSONObject(res)
+
+                if (response.code() == 200) {
+                    TOKEN = jsonObject.getString("token")
+                }
+
+                returnCode = response.code()
+                countDownLatch.countDown()
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                countDownLatch.countDown()
+                throw e
+            }
+
+        })
+
+        countDownLatch.await()
+        return returnCode
     }
 
-    fun signUp(newUser: User) {
+    fun signUp(newUser: User): Int {
+        val body = FormBody.Builder()
+            .add("email", newUser.email)
+            .add("password", newUser.password)
+            .build()
+
         val request = Request.Builder()
-            .get()
-            .header("Authorization", "bearer $TOKEN")
+            .post(body)
             .url(DOMAIN_URL + USER_SIGNUP_URL)
             .build()
+
+        var returnCode = Int.MAX_VALUE
+
+        val countDownLatch: CountDownLatch = CountDownLatch(1)
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                returnCode = response.code()
+                countDownLatch.countDown()
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                countDownLatch.countDown()
+            }
+        })
+
+        countDownLatch.await()
+        return returnCode
     }
 
     fun getMyList(): ArrayList<ShoppingList> {
@@ -50,12 +102,7 @@ class ShoppingListDAO {
 
         var newShoppingListArray = ArrayList<ShoppingList>()
 
-        //test
-        /*val list = ShoppingList()
-        list.name = "putain de merde"
-        list.id="1234"
-        newShoppingListArray.add(list)*/
-        val countDownLatch : CountDownLatch = CountDownLatch(1)
+        val countDownLatch: CountDownLatch = CountDownLatch(1)
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
 
@@ -96,15 +143,14 @@ class ShoppingListDAO {
 
     }
 
-    fun getItemFromList(id: String) : ArrayList<ShoppingItem>
-    {
+    fun getItemFromList(id: String): ArrayList<ShoppingItem> {
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")
             .url(DOMAIN_URL + SHOPPINGLIST_URL + id)
             .build()
-        var newItemList : ArrayList<ShoppingItem> = ArrayList()
-        val countDownLatch : CountDownLatch = CountDownLatch(1)
+        var newItemList: ArrayList<ShoppingItem> = ArrayList()
+        val countDownLatch: CountDownLatch = CountDownLatch(1)
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
 

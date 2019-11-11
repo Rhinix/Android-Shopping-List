@@ -1,18 +1,13 @@
-package be.amellaa.shoppinglist
+package be.amellaa.shoppinglist.activities.shoppingListActivity
 
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import be.amellaa.shoppinglist.DAO.ShoppingListDAO
+import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.models.ShoppingItem
-import be.amellaa.shoppinglist.models.ShoppingList
-import okhttp3.*
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.IOException
 
 class ItemListActivity : Activity()
 {
@@ -37,7 +32,8 @@ class ItemListActivity : Activity()
     }
 
     private fun setShoppingList(newItemList: ArrayList<ShoppingItem>) {
-        val adapterShopping: ItemListAdapter = ItemListAdapter(newItemList)
+        val adapterShopping: ItemListAdapter =
+            ItemListAdapter(newItemList)
         mRecyclerView.adapter = adapterShopping
         (mRecyclerView.adapter as ItemListAdapter).notifyDataSetChanged()
         Log.d("OUI", (mRecyclerView.adapter as ItemListAdapter).values.count().toString())

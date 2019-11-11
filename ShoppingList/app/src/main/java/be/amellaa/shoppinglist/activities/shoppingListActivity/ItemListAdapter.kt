@@ -1,14 +1,10 @@
-package be.amellaa.shoppinglist
+package be.amellaa.shoppinglist.activities.shoppingListActivity
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.models.ShoppingItem
 
 class ItemListAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.Adapter<ItemListAdapter.ListRowHolder>()
@@ -25,10 +21,14 @@ class ItemListAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.Adapt
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListRowHolder {
         var layoutInflater : LayoutInflater = LayoutInflater.from(parent.context)
-        return ListRowHolder(layoutInflater, parent);
+        return ListRowHolder(
+            layoutInflater,
+            parent
+        );
     }
 
-    class ListRowHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.holder_listitem, parent, false))
+    class ListRowHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(
+        R.layout.holder_listitem, parent, false))
     {
         lateinit var mShoppingItem: ShoppingItem
         lateinit var mNameTextView : TextView
