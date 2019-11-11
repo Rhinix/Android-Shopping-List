@@ -58,10 +58,10 @@ router.post("/login", (req, res) => {
               email: user.email,
               userId: user._id
             },
-            process.env.JWT_KEY,
-            {
-              expiresIn: "5h"
-            }
+            process.env.JWT_KEY
+            // {
+            //   expiresIn: "5h"
+            // }
           );
 
           return res.status(200).json({
