@@ -2,21 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:id="@+id/coordinatorShoppingList"
               android:padding="5dp"
               android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/shoppingListId"
-                android:text="ttt"
                 android:layout_margin="5dp"
                 android:textSize="16sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/shoppingListName"
-                android:text="ttt"
                 android:textSize="16sp"
                 android:layout_margin="5dp"/>
 

@@ -2,9 +2,13 @@ package be.amellaa.shoppinglist
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import be.amellaa.shoppinglist.DAO.ShoppingListDAO
 import be.amellaa.shoppinglist.models.ShoppingItem
+import be.amellaa.shoppinglist.models.ShoppingList
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -13,48 +17,37 @@ import java.io.IOException
 class ItemListActivity : Activity()
 {
 
-    val client = OkHttpClient()
     lateinit var mRecyclerView: RecyclerView
-    var arrayList_details: ArrayList<ShoppingItem> = ArrayList();
+    //var arrayList_details: ArrayList<ShoppingItem> = ArrayList();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_listitem)
-        mRecyclerView = findViewById<RecyclerView>(R.id.listView) as RecyclerView
+        mRecyclerView = findViewById<RecyclerView>(R.id.itemRecyclerView) as RecyclerView
         mRecyclerView.layoutManager = LinearLayoutManager(this)
-        if(intent != null) {
-            run("http://192.168.1.38:3000/shoppinglist/"+intent.getStringExtra("listId"))
-        }
+        //swipeView = findViewById<SwipeRefreshLayout>(R.id.swipeRefresh) as SwipeRefreshLayout
+        //swipeView.setOnRefreshListener { getMyList() }
+        //swipeView.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener(function = { getMyList() }))
+        getMyList()
     }
 
-    fun run(url: String) {
-        val request = Request.Builder()
-            .url(url)
-            .build()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                //progress.visibility = View.GONE
-            }
-            override fun onResponse(call: Call, response: Response) {
-                var str_response = response.body()!!.string()
-                //creating json object
-                val json_array: JSONArray = JSONObject(str_response).getJSONArray("articlesList")
-                var size:Int = json_array.length()
-                arrayList_details = ArrayList();
-                for (i in 0 until size) {
-                    var json_object : JSONObject = json_array.getJSONObject(i)
-                    var model : ShoppingItem = ShoppingItem();
-                    model.id = json_object.getString("_id")
-                    model.name = json_object.getString("name")
-                    arrayList_details.add(model)
-                }
-                runOnUiThread {
-                    //stuff that updates ui
-                    val adapterShopping : ItemListAdapter = ItemListAdapter(arrayList_details)
-                    mRecyclerView.adapter = adapterShopping
-                }
-            }
-        })
+    private fun getMyList() {
+        val itemListArray = ShoppingListDAO.instance.getItemFromList(this.intent.getStringExtra("listId"))
+        setShoppingList(itemListArray)
     }
+
+    private fun setShoppingList(newItemList: ArrayList<ShoppingItem>) {
+        val adapterShopping: ItemListAdapter = ItemListAdapter(newItemList)
+        mRecyclerView.adapter = adapterShopping
+        (mRecyclerView.adapter as ItemListAdapter).notifyDataSetChanged()
+        Log.d("OUI", (mRecyclerView.adapter as ItemListAdapter).values.count().toString())
+        //stopRefreshing()
+    }
+
+    /*private fun stopRefreshing() {
+        if (swipeView.isRefreshing) {
+            swipeView.isRefreshing = false
+        }
+    }*/
 
 }

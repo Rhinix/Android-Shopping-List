@@ -1,5 +1,6 @@
 package be.amellaa.shoppinglist.DAO
 
+import be.amellaa.shoppinglist.models.ShoppingItem
 import be.amellaa.shoppinglist.models.ShoppingList
 import be.amellaa.shoppinglist.models.User
 import okhttp3.*
@@ -15,10 +16,10 @@ class ShoppingListDAO {
     companion object {
         val instance = ShoppingListDAO()
         val httpClient = OkHttpClient()
-        val DOMAIN_URL = "http://192.168.1.38:3000"
+        val DOMAIN_URL = "http://192.168.0.22:3000"
         val USER_LOGIN_URL = "/user/login/"
         val USER_SIGNUP_URL = "/user/signup/"
-        val SHOPPINGLIST_URL = "/shoppingLists/"
+        val SHOPPINGLIST_URL = "/shoppingList/"
         val MY_LIST_URL = "/shoppingList/MyLists/"
         val SHARED_LIST_URL = "/shoppingList/SharedList/"
         var TOKEN =
@@ -93,6 +94,46 @@ class ShoppingListDAO {
 
     fun saveList() {
 
+    }
+
+    fun getItemFromList(id: String) : ArrayList<ShoppingItem>
+    {
+        val request = Request.Builder()
+            .get()
+            .header("Authorization", "bearer $TOKEN")
+            .url(DOMAIN_URL + SHOPPINGLIST_URL + id)
+            .build()
+        var newItemList : ArrayList<ShoppingItem> = ArrayList()
+        val countDownLatch : CountDownLatch = CountDownLatch(1)
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+
+                var res = response.body()!!.string()
+
+                var jsonArray = JSONObject(res).getJSONArray("articlesList")
+
+                var newShoppingItem: ShoppingItem
+                var jsonObject: JSONObject
+
+                for (i in 0 until jsonArray.length()) {
+                    jsonObject = jsonArray.getJSONObject(i)
+                    newShoppingItem = ShoppingItem()
+                    newShoppingItem.id = jsonObject.getString("_id")
+                    newShoppingItem.name = jsonObject.getString("name")
+                    newShoppingItem.qty = jsonObject.getInt("qty")
+                    newItemList.add(newShoppingItem)
+                }
+                countDownLatch.countDown()
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                countDownLatch.countDown()
+                throw e
+            }
+
+        })
+        countDownLatch.await();
+        return newItemList;
     }
 
     fun patchList() {
