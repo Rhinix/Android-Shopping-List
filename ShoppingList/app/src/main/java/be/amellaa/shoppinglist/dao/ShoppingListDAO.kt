@@ -1,4 +1,4 @@
-package be.amellaa.shoppinglist.DAO
+package be.amellaa.shoppinglist.dao
 
 import be.amellaa.shoppinglist.models.ShoppingItem
 import be.amellaa.shoppinglist.models.ShoppingList
@@ -7,7 +7,6 @@ import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
-import java.lang.Exception
 import java.util.concurrent.CountDownLatch
 
 class ShoppingListDAO {
@@ -16,7 +15,7 @@ class ShoppingListDAO {
     companion object {
         val instance = ShoppingListDAO()
         val httpClient = OkHttpClient()
-        const val DOMAIN_URL = "http://192.168.0.15:3000"
+        const val DOMAIN_URL = "http://10.11.1.252.:3000"
         const val USER_LOGIN_URL = "/user/login/"
         const val USER_SIGNUP_URL = "/user/signup/"
         const val SHOPPINGLIST_URL = "/shoppingList/"
