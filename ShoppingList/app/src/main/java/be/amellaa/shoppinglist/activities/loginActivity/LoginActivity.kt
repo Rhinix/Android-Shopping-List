@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import be.amellaa.shoppinglist.DAO.ShoppingListDAO
+import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
 import be.amellaa.shoppinglist.models.User

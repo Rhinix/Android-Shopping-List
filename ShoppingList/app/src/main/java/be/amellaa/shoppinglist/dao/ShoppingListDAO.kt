@@ -1,4 +1,4 @@
-package be.amellaa.shoppinglist.DAO
+package be.amellaa.shoppinglist.dao
 
 import be.amellaa.shoppinglist.models.ShoppingItem
 import be.amellaa.shoppinglist.models.ShoppingList
@@ -7,22 +7,62 @@ import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
-import java.lang.Exception
+import java.lang.RuntimeException
 import java.util.concurrent.CountDownLatch
+import javax.net.ssl.*
+import kotlin.collections.ArrayList
 
 class ShoppingListDAO {
 
 
     companion object {
         val instance = ShoppingListDAO()
-        val httpClient = OkHttpClient()
-        const val DOMAIN_URL = "http://192.168.1.42:3000"
+        val httpClient = getOkHttpClient()
+        const val DOMAIN_URL = "https://192.168.137.1:3000"
         const val USER_LOGIN_URL = "/user/login/"
         const val USER_SIGNUP_URL = "/user/signup/"
         const val SHOPPINGLIST_URL = "/shoppingList/"
         const val MY_LIST_URL = "/shoppingList/MyLists/"
         const val SHARED_LIST_URL = "/shoppingList/SharedList/"
         var TOKEN = ""
+
+
+        private fun getOkHttpClient(): OkHttpClient {
+            try {
+                val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+                    override fun checkClientTrusted(
+                        chain: Array<java.security.cert.X509Certificate>,
+                        authType: String
+                    ) {
+                    }
+
+                    override fun checkServerTrusted(
+                        chain: Array<java.security.cert.X509Certificate>,
+                        authType: String
+                    ) {
+                    }
+
+                    override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> {
+                        return arrayOf()
+                    }
+                })
+
+                // Install the all-trusting trust manager
+                val sslContext = SSLContext.getInstance("SSL")
+                sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+                // Create an ssl socket factory with our all-trusting manager
+                val sslSocketFactory = sslContext.socketFactory
+
+                val builder = OkHttpClient.Builder()
+                builder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+                builder.hostnameVerifier { _, _ -> true }
+
+                return builder.build()
+            } catch (e: Exception) {
+                throw RuntimeException(e)
+            }
+
+        }
     }
 
     fun login(user: User): Int {
