@@ -16,7 +16,7 @@ class ShoppingListDAO {
     companion object {
         val instance = ShoppingListDAO()
         val httpClient = OkHttpClient()
-        const val DOMAIN_URL = "http://192.168.0.15:3000"
+        const val DOMAIN_URL = "http://192.168.1.42:3000"
         const val USER_LOGIN_URL = "/user/login/"
         const val USER_SIGNUP_URL = "/user/signup/"
         const val SHOPPINGLIST_URL = "/shoppingList/"
