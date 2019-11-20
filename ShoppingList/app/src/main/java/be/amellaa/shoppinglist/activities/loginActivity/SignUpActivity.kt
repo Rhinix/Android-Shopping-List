@@ -10,10 +10,12 @@ import android.widget.TextView
 import android.widget.Toast
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
+import be.amellaa.shoppinglist.activities.ProcessResponseCode
 import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.models.User
 
-class SignUpActivity : Activity() {
+class SignUpActivity : Activity(), ProcessResponseCode {
+
 
     lateinit var mEmailEditText: EditText
     lateinit var mPasswordEditText: EditText
@@ -62,18 +64,10 @@ class SignUpActivity : Activity() {
 
         val user = User(email, password)
 
-        /*when (ShoppingListDAO.instance.signUp(user)) {
-            200 -> changeActivity(this, LoginActivity::class.java)
-            409 -> makeToast("This email is already registered", Toast.LENGTH_LONG)
-        }*/
-
-        ShoppingListDAO.instance.signUp(user, object: CommunicationInterface {
+        ShoppingListDAO.instance.signUp(user, object : CommunicationInterface {
             override fun communicateACode(code: Int) {
-                runOnUiThread{
-                    when (code) {
-                        200 -> changeActivity(applicationContext, LoginActivity::class.java)
-                        409 -> makeToast("This email is already registered", Toast.LENGTH_LONG)
-                    }
+                runOnUiThread {
+                    processCode(code)
                 }
             }
         })
@@ -81,14 +75,21 @@ class SignUpActivity : Activity() {
 
     }
 
-    private fun isConfirmPasswordCorrect(): Boolean {
-        return mPasswordEditText.text.toString().equals(mConfirmPasswordText.text.toString())
-    }
-
     private fun areFieldsValid(): Boolean {
         return mEmailEditText.text.isNotEmpty()
                 && mPasswordEditText.text.isNotEmpty()
                 && mConfirmPasswordText.text.isNotEmpty()
+    }
+
+    private fun isConfirmPasswordCorrect(): Boolean {
+        return mPasswordEditText.text.toString().equals(mConfirmPasswordText.text.toString())
+    }
+
+    override fun processCode(code: Int) {
+        when (code) {
+            200 -> changeActivity(applicationContext, LoginActivity::class.java)
+            409 -> makeToast("This email is already registered", Toast.LENGTH_LONG)
+        }
     }
 
     private fun makeToast(message: String, duration: Int) {

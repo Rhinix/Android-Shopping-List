@@ -10,11 +10,13 @@ import android.widget.TextView
 import android.widget.Toast
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
+import be.amellaa.shoppinglist.activities.ProcessResponseCode
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
 import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.models.User
 
-class LoginActivity : Activity() {
+class LoginActivity : Activity(), ProcessResponseCode {
+
 
     lateinit var mLinkSignup: TextView
     lateinit var mLoginButton: Button
@@ -47,22 +49,23 @@ class LoginActivity : Activity() {
 
             val user = User(email, password)
 
-            /*when (ShoppingListDAO.instance.login(user)) {
-                200 -> changeActivity(this, ShoppingListActivity::class.java)
-                401 -> Toast.makeText(this, "Authentication failed", Toast.LENGTH_LONG).show()
-            }*/
-            ShoppingListDAO.instance.login(user, object: CommunicationInterface {
+            ShoppingListDAO.instance.login(user, object : CommunicationInterface {
                 override fun communicateACode(code: Int) {
-                    runOnUiThread{
-                        when (code) {
-                            200 -> changeActivity(applicationContext, ShoppingListActivity::class.java)
-                            401 -> Toast.makeText(applicationContext, "Authentication failed", Toast.LENGTH_LONG)
-                        }
+                    runOnUiThread {
+                        processCode(code)
                     }
                 }
             })
         } else {
             Toast.makeText(this, "Fields are not valid", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    override fun processCode(code: Int) {
+        when (code) {
+            200 -> changeActivity(applicationContext, ShoppingListActivity::class.java)
+            401 -> Toast.makeText(applicationContext, "Authentication failed", Toast.LENGTH_LONG)
         }
     }
 

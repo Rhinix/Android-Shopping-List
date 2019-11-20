@@ -8,7 +8,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.RuntimeException
-import java.util.concurrent.CountDownLatch
 import javax.net.ssl.*
 import kotlin.collections.ArrayList
 
