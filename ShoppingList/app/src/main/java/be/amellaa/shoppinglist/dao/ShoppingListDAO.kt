@@ -65,7 +65,7 @@ class ShoppingListDAO {
         }
     }
 
-    fun login(user: User): Int {
+    fun login(user: User, communicationInterface: CommunicationInterface){
         val body = FormBody.Builder()
             .add("email", user.email)
             .add("password", user.password)
@@ -76,9 +76,6 @@ class ShoppingListDAO {
             .url(DOMAIN_URL + USER_LOGIN_URL)
             .build()
 
-        var returnCode = Int.MAX_VALUE
-
-        val countDownLatch: CountDownLatch = CountDownLatch(1)
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
 
@@ -89,22 +86,17 @@ class ShoppingListDAO {
                     TOKEN = jsonObject.getString("token")
                 }
 
-                returnCode = response.code()
-                countDownLatch.countDown()
+                communicationInterface.communicateACode(response.code())
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                countDownLatch.countDown()
                 throw e
             }
 
         })
-
-        countDownLatch.await()
-        return returnCode
     }
 
-    fun signUp(newUser: User): Int {
+    fun signUp(newUser: User, communicationInterface: CommunicationInterface){
         val body = FormBody.Builder()
             .add("email", newUser.email)
             .add("password", newUser.password)
@@ -115,25 +107,17 @@ class ShoppingListDAO {
             .url(DOMAIN_URL + USER_SIGNUP_URL)
             .build()
 
-        var returnCode = Int.MAX_VALUE
-
-        val countDownLatch: CountDownLatch = CountDownLatch(1)
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                returnCode = response.code()
-                countDownLatch.countDown()
+                communicationInterface.communicateACode(response.code())
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                countDownLatch.countDown()
             }
         })
-
-        countDownLatch.await()
-        return returnCode
     }
 
-    fun getMyList(): ArrayList<ShoppingList> {
+    fun getMyList(communicationInterface: CommunicationInterface){
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")
@@ -142,7 +126,6 @@ class ShoppingListDAO {
 
         var newShoppingListArray = ArrayList<ShoppingList>()
 
-        val countDownLatch: CountDownLatch = CountDownLatch(1)
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
 
@@ -161,17 +144,14 @@ class ShoppingListDAO {
                     newShoppingList.nbArticles = jsonObject.getInt("nbArticles")
                     newShoppingListArray.add(newShoppingList)
                 }
-                countDownLatch.countDown()
+                communicationInterface.communicateShoppingLists(newShoppingListArray)
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                countDownLatch.countDown()
                 throw e
             }
 
         })
-        countDownLatch.await();
-        return newShoppingListArray
 
     }
 
@@ -183,14 +163,13 @@ class ShoppingListDAO {
 
     }
 
-    fun getItemFromList(id: String): ArrayList<ShoppingItem> {
+    fun getItemFromList(id: String, communicationInterface: CommunicationInterface) {
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")
             .url(DOMAIN_URL + SHOPPINGLIST_URL + id)
             .build()
         var newItemList: ArrayList<ShoppingItem> = ArrayList()
-        val countDownLatch: CountDownLatch = CountDownLatch(1)
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
 
@@ -209,17 +188,14 @@ class ShoppingListDAO {
                     newShoppingItem.qty = jsonObject.getInt("qty")
                     newItemList.add(newShoppingItem)
                 }
-                countDownLatch.countDown()
+                communicationInterface.communicateShoppingItems(newItemList)
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                countDownLatch.countDown()
                 throw e
             }
 
         })
-        countDownLatch.await();
-        return newItemList;
     }
 
     fun patchList() {

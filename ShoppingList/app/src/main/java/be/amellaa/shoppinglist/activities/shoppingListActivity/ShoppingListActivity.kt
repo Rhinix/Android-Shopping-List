@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
+import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.models.ShoppingList
 
 class ShoppingListActivity : Activity() {
@@ -28,8 +29,13 @@ class ShoppingListActivity : Activity() {
     }
 
     private fun getMyList() {
-        val shoppingListArray = ShoppingListDAO.instance.getMyList()
-        setShoppingList(shoppingListArray)
+        ShoppingListDAO.instance.getMyList(object: CommunicationInterface{
+            override fun communicateShoppingLists(shoppingLists: ArrayList<ShoppingList>) {
+                runOnUiThread{
+                    setShoppingList(shoppingLists)
+                }
+            }
+        })
     }
 
     private fun setShoppingList(newShoppingList: ArrayList<ShoppingList>) {
@@ -39,7 +45,6 @@ class ShoppingListActivity : Activity() {
             )
         mRecyclerView.adapter = adapterShopping
         (mRecyclerView.adapter as ShoppingListAdapter).notifyDataSetChanged()
-        Log.d("OUI", (mRecyclerView.adapter as ShoppingListAdapter).values.count().toString())
         stopRefreshing()
     }
 

@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
+import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.models.User
 
 class SignUpActivity : Activity() {
@@ -61,10 +62,21 @@ class SignUpActivity : Activity() {
 
         val user = User(email, password)
 
-        when (ShoppingListDAO.instance.signUp(user)) {
+        /*when (ShoppingListDAO.instance.signUp(user)) {
             200 -> changeActivity(this, LoginActivity::class.java)
             409 -> makeToast("This email is already registered", Toast.LENGTH_LONG)
-        }
+        }*/
+
+        ShoppingListDAO.instance.signUp(user, object: CommunicationInterface {
+            override fun communicateACode(code: Int) {
+                runOnUiThread{
+                    when (code) {
+                        200 -> changeActivity(applicationContext, LoginActivity::class.java)
+                        409 -> makeToast("This email is already registered", Toast.LENGTH_LONG)
+                    }
+                }
+            }
+        })
 
 
     }
