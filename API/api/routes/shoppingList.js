@@ -105,7 +105,8 @@ router.post("/", checkAuth, (req, res) => {
   const userId = jwt.decode(token).userId;
 
   let listName = req.body.name;
-  let articlesList = req.body.articlesList;
+  console.log(listName);
+  let articlesList = req.body.articlesList||[];
 
   let newArticle;
   let ListArticles = [];

@@ -12,6 +12,11 @@
     <string name="signup_button">Sign Up</string>
     <string name="link_login">Login</string>
 
+    <string name="addShoppingListName">Name</string>
+    <string name="addShoppingListTitle">New ShoppingList</string>
+    <string name="addShoppingCancel">Cancel</string>
+    <string name="addShoppingOk">Add</string>
+
     <string name="loading">Loading...</string>
 
 </resources>

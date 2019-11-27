@@ -10,6 +10,11 @@ import java.io.IOException
 import java.lang.RuntimeException
 import javax.net.ssl.*
 import kotlin.collections.ArrayList
+import android.R.string
+import android.util.Log
+import okhttp3.Response
+
+
 
 class ShoppingListDAO {
 
@@ -228,6 +233,33 @@ class ShoppingListDAO {
             }
 
         })
+    }
+
+    fun createShoppingList(name: String){
+        var postData = JSONObject()
+        postData.put("name", name)
+        postData.put("articlesList", JSONArray())
+        val body = RequestBody.create(MediaType.parse("application/json"), postData.toString())
+        val request = Request.Builder()
+            .post(body)
+            .header("Authorization", "bearer $TOKEN")
+            .url(DOMAIN_URL + SHOPPINGLIST_URL)
+            .build()
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                val mMessage = e.message.toString()
+                Log.w("failure Response", mMessage)
+                //call.cancel();
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+
+                val mMessage = response.body()!!.string()
+                Log.e("TAG", mMessage)
+            }
+        })
+
     }
 
     fun patchList() {
