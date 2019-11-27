@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import be.amellaa.shoppinglist.ProgressDialog
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.ProcessResponseCode
@@ -22,6 +23,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
     lateinit var mConfirmPasswordText: EditText
     lateinit var mSignUpButton: Button
     lateinit var mLinkLogin: TextView
+    lateinit var mProgressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
         mConfirmPasswordText = findViewById(R.id.input_confirm_password)
         mSignUpButton = findViewById(R.id.signup_button)
         mLinkLogin = findViewById(R.id.link_login)
+        this.mProgressDialog = ProgressDialog(this)
     }
 
     private fun setListeners() {
@@ -58,6 +61,8 @@ class SignUpActivity : Activity(), ProcessResponseCode {
             makeToast("Password and confirm password must match", Toast.LENGTH_LONG)
             return
         }
+
+        mProgressDialog.show()
 
         val email = mEmailEditText.text.toString()
         val password = mPasswordEditText.text.toString()
@@ -86,6 +91,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
     }
 
     override fun processCode(code: Int) {
+        mProgressDialog.dismiss()
         when (code) {
             200 -> changeActivity(applicationContext, LoginActivity::class.java)
             409 -> makeToast("This email is already registered", Toast.LENGTH_LONG)
