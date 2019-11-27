@@ -3,8 +3,8 @@ package be.amellaa.shoppinglist.activities
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import be.amellaa.shoppinglist.activities.shoppingListActivity.MyListFragment
-import be.amellaa.shoppinglist.activities.shoppingListActivity.SharedFragment
+import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.MyListFragment
+import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.SharedFragment
 
 class TabAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm){
 

@@ -1,6 +1,7 @@
-package be.amellaa.shoppinglist.activities.shoppingListActivity
+package be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment
 
 
+import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.ListFragment
 import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.models.ShoppingList

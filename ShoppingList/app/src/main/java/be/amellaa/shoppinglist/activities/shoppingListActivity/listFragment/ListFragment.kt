@@ -1,4 +1,4 @@
-package be.amellaa.shoppinglist.activities.shoppingListActivity
+package be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import be.amellaa.shoppinglist.R
-import be.amellaa.shoppinglist.dao.CommunicationInterface
-import be.amellaa.shoppinglist.dao.ShoppingListDAO
+import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
 import be.amellaa.shoppinglist.models.ShoppingList
 
 abstract class ListFragment() : Fragment() {
