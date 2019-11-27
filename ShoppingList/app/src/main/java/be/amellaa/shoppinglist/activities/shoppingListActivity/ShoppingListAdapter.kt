@@ -39,7 +39,7 @@ class ShoppingListAdapter(val values : ArrayList<ShoppingList>) : RecyclerView.A
             mNameTextView = itemView.findViewById(R.id.shoppingListName)
             mIdTextView = itemView.findViewById(R.id.shoppingListId)
             itemView.setOnClickListener { v ->
-                val intent : Intent = Intent(parent.context, ItemListActivity::class.java)
+                val intent : Intent = Intent(parent.context, ShoppingItemActivity::class.java)
                 intent.putExtra("listId", mShoppingList.id)
                 parent.context.startActivity(intent)
             }

@@ -2,7 +2,6 @@ package be.amellaa.shoppinglist.activities.shoppingListActivity
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -11,7 +10,7 @@ import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.models.ShoppingItem
 
-class ItemListActivity : Activity()
+class ShoppingItemActivity : Activity()
 {
 
     lateinit var mRecyclerView: RecyclerView
@@ -20,7 +19,7 @@ class ItemListActivity : Activity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_listitem)
+        setContentView(R.layout.activity_shoppingitem)
         mRecyclerView = findViewById<RecyclerView>(R.id.itemRecyclerView) as RecyclerView
         mRecyclerView.layoutManager = LinearLayoutManager(this)
         swipeView = findViewById<SwipeRefreshLayout>(R.id.itemSwipeRefresh) as SwipeRefreshLayout
@@ -40,10 +39,10 @@ class ItemListActivity : Activity()
     }
 
     private fun setShoppingList(newItemList: ArrayList<ShoppingItem>) {
-        val adapterShopping: ItemListAdapter =
-            ItemListAdapter(newItemList)
+        val adapterShopping: ShoppingItemAdapter =
+            ShoppingItemAdapter(newItemList)
         mRecyclerView.adapter = adapterShopping
-        (mRecyclerView.adapter as ItemListAdapter).notifyDataSetChanged()
+        (mRecyclerView.adapter as ShoppingItemAdapter).notifyDataSetChanged()
         stopRefreshing()
     }
 

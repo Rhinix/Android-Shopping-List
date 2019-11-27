@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.models.ShoppingItem
 
-class ItemListAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.Adapter<ItemListAdapter.ListRowHolder>()
+class ShoppingItemAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.Adapter<ShoppingItemAdapter.ListRowHolder>()
 {
 
     override fun getItemCount(): Int {

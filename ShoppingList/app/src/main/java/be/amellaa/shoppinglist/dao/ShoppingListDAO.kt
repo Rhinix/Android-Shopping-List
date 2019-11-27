@@ -22,7 +22,7 @@ class ShoppingListDAO {
         const val USER_SIGNUP_URL = "/user/signup/"
         const val SHOPPINGLIST_URL = "/shoppingList/"
         const val MY_LIST_URL = "/shoppingList/MyLists/"
-        const val SHARED_LIST_URL = "/shoppingList/SharedList/"
+        const val SHARED_LIST_URL = "/shoppingList/SharedLists/"
         var TOKEN = ""
 
 
@@ -154,8 +154,41 @@ class ShoppingListDAO {
 
     }
 
-    fun getSharedList() {
+    fun getSharedList(communicationInterface: CommunicationInterface) {
+        val request = Request.Builder()
+            .get()
+            .header("Authorization", "bearer $TOKEN")
+            .url(DOMAIN_URL + SHARED_LIST_URL)
+            .build()
 
+        var newShoppingListArray = ArrayList<ShoppingList>()
+
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+
+                var res = response.body()!!.string()
+
+                var jsonArray = JSONArray(res)
+
+                var newShoppingList: ShoppingList
+                var jsonObject: JSONObject
+
+                for (i in 0 until jsonArray.length()) {
+                    jsonObject = jsonArray.getJSONObject(i)
+                    newShoppingList = ShoppingList()
+                    newShoppingList.id = jsonObject.getString("_id")
+                    newShoppingList.name = jsonObject.getString("name")
+                    newShoppingList.nbArticles = jsonObject.getInt("nbArticles")
+                    newShoppingListArray.add(newShoppingList)
+                }
+                communicationInterface.communicateShoppingLists(newShoppingListArray)
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                throw e
+            }
+
+        })
     }
 
     fun saveList() {

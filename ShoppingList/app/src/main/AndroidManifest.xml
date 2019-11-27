@@ -20,7 +20,7 @@
         </activity>
         <activity android:name=".activities.loginActivity.SignUpActivity" />
         <activity android:name=".activities.shoppingListActivity.ShoppingListActivity" />
-        <activity android:name=".activities.shoppingListActivity.ItemListActivity" />
+        <activity android:name=".activities.shoppingListActivity.ShoppingItemActivity" />
 
     </application>
 
