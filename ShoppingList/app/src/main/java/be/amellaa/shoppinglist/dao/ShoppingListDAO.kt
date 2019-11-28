@@ -267,7 +267,25 @@ class ShoppingListDAO {
     }
 
     fun deleteList(id: String) {
+        val request = Request.Builder()
+            .delete()
+            .header("Authorization", "bearer $TOKEN")
+            .url(DOMAIN_URL + SHOPPINGLIST_URL + id)
+            .build()
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                val mMessage = e.message.toString()
+                Log.w("failure Response", mMessage)
+                //call.cancel();
+            }
 
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+
+                val mMessage = response.body()!!.string()
+                Log.e("TAG", mMessage)
+            }
+        })
     }
 
     fun setHeader(fieldName: String, value: String) {

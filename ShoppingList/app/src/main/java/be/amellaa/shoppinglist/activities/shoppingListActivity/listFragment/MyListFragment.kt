@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.AddShoppingListDialog
+import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.ListFragment
 import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
@@ -30,11 +33,33 @@ class MyListFragment : ListFragment() , AddShoppingListDialog.DialogListener  {
         mFloatingButton = view!!.findViewById<FloatingActionButton>(R.id.addListButton)
         mAddShoppingListDialog = AddShoppingListDialog()
         mAddShoppingListDialog.setListener(this)
+        //setSwipeToDismiss()
         mFloatingButton.setOnClickListener {
             mAddShoppingListDialog.show(fragmentManager, "AddShoppingListDialog")
         }
         return view;
     }
+
+    /*private fun setSwipeToDismiss() {
+        val touch : ItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return false
+            }
+
+            override fun onSwiped(viewHolder : RecyclerView.ViewHolder, swipeDir : Int){
+                //crimes.removeAt(viewHolder.adapterPosition)
+                //mCrimeAdapter!!.notifyDataSetChanged()
+                ShoppingListDAO.instance.deleteList((viewHolder as ShoppingListAdapter.ListRowHolder).mShoppingList.id)
+                getList()
+            }
+        })
+        touch.attachToRecyclerView(mRecyclerView)
+    }*/
 
     override fun getList() {
         ShoppingListDAO.instance.getMyList(object : CommunicationInterface {
