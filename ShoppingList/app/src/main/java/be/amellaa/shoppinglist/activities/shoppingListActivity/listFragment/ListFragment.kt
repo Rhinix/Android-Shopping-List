@@ -37,7 +37,7 @@ abstract class ListFragment() : Fragment() {
 
     abstract fun getList()
 
-    protected fun setShoppingList(newShoppingList: ArrayList<ShoppingList>) {
+    fun setShoppingList(newShoppingList: ArrayList<ShoppingList>) {
         val adapterShopping: ShoppingListAdapter =
             ShoppingListAdapter(
                 newShoppingList
