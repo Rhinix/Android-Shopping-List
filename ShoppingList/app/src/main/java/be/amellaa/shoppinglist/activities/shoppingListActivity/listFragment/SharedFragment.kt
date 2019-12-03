@@ -5,20 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import be.amellaa.shoppinglist.activities.shoppingListActivity.AddShoppingListDialog
-import be.amellaa.shoppinglist.dao.CommunicationInterface
-import be.amellaa.shoppinglist.dao.ShoppingListDAO
-import be.amellaa.shoppinglist.models.ShoppingList
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
 import be.amellaa.shoppinglist.R
+import be.amellaa.shoppinglist.dao.DataFetcher
 
 class SharedFragment : ListFragment() {
 
-    lateinit var mFloatingButton : FloatingActionButton
-    lateinit var mAddShoppingListDialog: AddShoppingListDialog
+    lateinit var mFloatingButton: FloatingActionButton
+    var mDataFetcher = DataFetcher(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         mFloatingButton = view!!.findViewById<FloatingActionButton>(R.id.addListButton)
         mFloatingButton.hide()
@@ -26,13 +26,7 @@ class SharedFragment : ListFragment() {
     }
 
     override fun getList() {
-        ShoppingListDAO.instance.getSharedList(object : CommunicationInterface {
-            override fun communicateShoppingLists(shoppingLists: ArrayList<ShoppingList>) {
-                activity?.runOnUiThread {
-                    setShoppingList(shoppingLists)
-                }
-            }
-        })
+        mDataFetcher.fetchSharedList()
     }
 
 
