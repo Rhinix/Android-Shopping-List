@@ -6,7 +6,8 @@ const articleSchema = mongoose.Schema({
     required: true,
     type: String
   },
-  qty: Number
+  qty: Number,
+  checked: {type: Boolean, default: false}
 });
 
 module.exports = mongoose.model("article", articleSchema);

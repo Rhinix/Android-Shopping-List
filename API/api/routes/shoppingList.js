@@ -84,7 +84,7 @@ router.get("/:listId", checkAuth, (req, res) => {
 
   ShoppingList.findById(id)
     .select("_id name articlesList")
-    .populate("articlesList", "name qty _id")
+    .populate("articlesList", "name qty checked _id")
     .exec()
     .then(result => {
       if (result) {
@@ -146,7 +146,7 @@ router.post("/", checkAuth, (req, res) => {
 router.delete("/:listId", checkAuth, (req, res) => {
   let id = req.params.listId;
   ShoppingList.findByIdAndDelete(id)
-    .populate("articlesList", "name _id qty")
+    .populate("articlesList", "name _id qty checked")
     .exec()
     .then(shoppingList => {
       if (shoppingList) {
@@ -189,7 +189,7 @@ router.patch("/:listId", checkAuth, (req, res) => {
   let deletedArticles = req.body.deletedArticles;
 
   ShoppingList.findById(id)
-    .populate("articlesList", "name qty _id")
+    .populate("articlesList", "name qty checked _id")
     .exec()
     .then(shoppingList => {
       if (shoppingList) {
