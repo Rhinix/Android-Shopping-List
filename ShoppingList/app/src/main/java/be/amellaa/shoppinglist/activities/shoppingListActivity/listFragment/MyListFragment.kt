@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.AddShoppingListDialog
+import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
 import be.amellaa.shoppinglist.dao.DataFetcher
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,12 +18,10 @@ class MyListFragment : ListFragment(), AddShoppingListDialog.DialogListener {
 
     lateinit var mFloatingButton: FloatingActionButton
     lateinit var mAddShoppingListDialog: AddShoppingListDialog
-    var mDataFetcher = DataFetcher(this)
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         if (dialog is AddShoppingListDialog) {
-            ShoppingListDAO.instance.createShoppingList(dialog.getEditText())
-            getList()
+            mDataFetcher.createShoppingList(dialog.getEditText())
         }
     }
 
@@ -31,18 +30,19 @@ class MyListFragment : ListFragment(), AddShoppingListDialog.DialogListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        mDataFetcher = DataFetcher(this)
         val view = super.onCreateView(inflater, container, savedInstanceState)
         mFloatingButton = view!!.findViewById<FloatingActionButton>(R.id.addListButton)
         mAddShoppingListDialog = AddShoppingListDialog()
         mAddShoppingListDialog.setListener(this)
-        //setSwipeToDismiss()
+        setSwipeToDismiss()
         mFloatingButton.setOnClickListener {
             mAddShoppingListDialog.show(fragmentManager, "AddShoppingListDialog")
         }
         return view;
     }
 
-    /*private fun setSwipeToDismiss() {
+    private fun setSwipeToDismiss() {
         val touch : ItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -54,16 +54,11 @@ class MyListFragment : ListFragment(), AddShoppingListDialog.DialogListener {
             }
 
             override fun onSwiped(viewHolder : RecyclerView.ViewHolder, swipeDir : Int){
-                //crimes.removeAt(viewHolder.adapterPosition)
-                //mCrimeAdapter!!.notifyDataSetChanged()
-                ShoppingListDAO.instance.deleteList((viewHolder as ShoppingListAdapter.ListRowHolder).mShoppingList.id)
-                getList()
+                val list = (viewHolder as ShoppingListAdapter.ListRowHolder).mShoppingList
+                mDataFetcher.deleteShoppingList(list.id)
             }
         })
         touch.attachToRecyclerView(mRecyclerView)
-    }*/
-
-    override fun getList() {
-        mDataFetcher.fetchMyList()
     }
+
 }
