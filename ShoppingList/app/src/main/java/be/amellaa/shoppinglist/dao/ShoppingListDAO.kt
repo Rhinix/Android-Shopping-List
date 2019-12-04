@@ -235,7 +235,7 @@ class ShoppingListDAO {
         })
     }
 
-    fun createShoppingList(name: String){
+    fun createShoppingList(name: String, communicationInterface: CommunicationInterface){
         var postData = JSONObject()
         postData.put("name", name)
         postData.put("articlesList", JSONArray())
@@ -254,9 +254,7 @@ class ShoppingListDAO {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-
-                val mMessage = response.body()!!.string()
-                Log.e("TAG", mMessage)
+                communicationInterface.communicateACode(response.code())
             }
         })
 
@@ -266,7 +264,7 @@ class ShoppingListDAO {
 
     }
 
-    fun deleteList(id: String) {
+    fun deleteList(id: String, communicationInterface: CommunicationInterface) {
         val request = Request.Builder()
             .delete()
             .header("Authorization", "bearer $TOKEN")
@@ -281,9 +279,7 @@ class ShoppingListDAO {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-
-                val mMessage = response.body()!!.string()
-                Log.e("TAG", mMessage)
+                communicationInterface.communicateACode(response.code())
             }
         })
     }

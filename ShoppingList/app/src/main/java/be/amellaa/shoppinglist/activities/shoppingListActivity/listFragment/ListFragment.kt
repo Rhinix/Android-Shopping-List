@@ -14,6 +14,7 @@ import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.AddShoppingListDialog
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
 import be.amellaa.shoppinglist.dao.CommunicationInterface
+import be.amellaa.shoppinglist.dao.DataFetcher
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.models.ShoppingList
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -22,6 +23,7 @@ abstract class ListFragment() : Fragment() {
 
     lateinit var mRecyclerView: RecyclerView
     lateinit var swipeView: SwipeRefreshLayout
+    lateinit var mDataFetcher: DataFetcher
 
 
     override fun onCreateView(
@@ -38,13 +40,15 @@ abstract class ListFragment() : Fragment() {
         return view
     }
 
-    abstract fun getList()
+    fun getList(){
+        mDataFetcher.fetchList()
+    }
 
     fun setShoppingList(newShoppingList: ArrayList<ShoppingList>) {
         val adapterShopping: ShoppingListAdapter =
-            ShoppingListAdapter(
-                newShoppingList
-            )
+                ShoppingListAdapter(
+                    newShoppingList
+                )
         mRecyclerView.adapter = adapterShopping
         (mRecyclerView.adapter as ShoppingListAdapter).notifyDataSetChanged()
         stopRefreshing()

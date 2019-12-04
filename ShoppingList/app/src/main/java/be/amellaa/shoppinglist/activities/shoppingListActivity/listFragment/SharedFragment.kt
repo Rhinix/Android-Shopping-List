@@ -12,22 +12,17 @@ import be.amellaa.shoppinglist.dao.DataFetcher
 class SharedFragment : ListFragment() {
 
     lateinit var mFloatingButton: FloatingActionButton
-    var mDataFetcher = DataFetcher(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        mDataFetcher = DataFetcher(this)
         val view = super.onCreateView(inflater, container, savedInstanceState)
         mFloatingButton = view!!.findViewById<FloatingActionButton>(R.id.addListButton)
         mFloatingButton.hide()
         return view
     }
-
-    override fun getList() {
-        mDataFetcher.fetchSharedList()
-    }
-
 
 }
