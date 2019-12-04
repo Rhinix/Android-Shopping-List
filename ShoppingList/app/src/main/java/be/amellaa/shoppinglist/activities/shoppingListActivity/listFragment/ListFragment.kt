@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import be.amellaa.shoppinglist.R
+import be.amellaa.shoppinglist.activities.ProcessResponseCode
 import be.amellaa.shoppinglist.activities.shoppingListActivity.AddShoppingListDialog
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
 import be.amellaa.shoppinglist.dao.CommunicationInterface
@@ -18,8 +19,10 @@ import be.amellaa.shoppinglist.dao.DataFetcher
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.models.ShoppingList
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
+import kotlin.collections.ArrayList
 
-abstract class ListFragment() : Fragment() {
+abstract class ListFragment() : Fragment(), CommunicationInterface, ProcessResponseCode {
 
     lateinit var mRecyclerView: RecyclerView
     lateinit var swipeView: SwipeRefreshLayout
@@ -40,18 +43,34 @@ abstract class ListFragment() : Fragment() {
         return view
     }
 
-    fun getList(){
-        mDataFetcher.fetchList()
+    abstract fun getList()
+
+    override fun <T> communicateData(data: T) {
+
+        activity!!.runOnUiThread {
+            if (data is ArrayList<*>) {
+                setShoppingList(data as ArrayList<ShoppingList>)
+            } else {
+                processCode(data as Int)
+            }
+
+        }
     }
 
     fun setShoppingList(newShoppingList: ArrayList<ShoppingList>) {
         val adapterShopping: ShoppingListAdapter =
-                ShoppingListAdapter(
-                    newShoppingList
-                )
+            ShoppingListAdapter(
+                newShoppingList
+            )
         mRecyclerView.adapter = adapterShopping
         (mRecyclerView.adapter as ShoppingListAdapter).notifyDataSetChanged()
         stopRefreshing()
+    }
+
+    override fun processCode(code: Int) {
+        when (code) {
+            200 -> getList()
+        }
     }
 
     private fun stopRefreshing() {

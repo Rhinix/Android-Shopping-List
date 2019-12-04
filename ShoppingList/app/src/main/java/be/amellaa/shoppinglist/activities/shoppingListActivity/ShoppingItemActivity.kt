@@ -2,24 +2,28 @@ package be.amellaa.shoppinglist.activities.shoppingListActivity
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.dao.CommunicationInterface
+import be.amellaa.shoppinglist.dao.DataFetcher
 import be.amellaa.shoppinglist.models.ShoppingItem
 
-class ShoppingItemActivity : Activity()
-{
+class ShoppingItemActivity : Activity(), CommunicationInterface {
+
 
     lateinit var mRecyclerView: RecyclerView
     lateinit var swipeView: SwipeRefreshLayout
+    lateinit var mDataFetcher: DataFetcher
     //var arrayList_details: ArrayList<ShoppingItem> = ArrayList();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoppingitem)
+        mDataFetcher = DataFetcher(this)
         mRecyclerView = findViewById<RecyclerView>(R.id.itemRecyclerView) as RecyclerView
         mRecyclerView.layoutManager = LinearLayoutManager(this)
         swipeView = findViewById<SwipeRefreshLayout>(R.id.itemSwipeRefresh) as SwipeRefreshLayout
@@ -29,13 +33,19 @@ class ShoppingItemActivity : Activity()
     }
 
     private fun getMyList() {
-        ShoppingListDAO.instance.getItemFromList(this.intent.getStringExtra("listId"), object : CommunicationInterface{
-            override fun communicateShoppingItems(shoppingItems: ArrayList<ShoppingItem>) {
-                runOnUiThread {
-                    setShoppingList(shoppingItems)
-                }
+        val id = this.intent.getStringExtra("listId")
+        mDataFetcher.fetchItems(id)
+    }
+
+    override fun <T> communicateData(data: T) {
+        runOnUiThread {
+            if ((data as ArrayList<ShoppingItem>).isEmpty()) {
+                Log.d("oui", "putain")
+            } else {
+                Log.d("oui", "putain2")
             }
-        })
+            setShoppingList(data as ArrayList<ShoppingItem>)
+        }
     }
 
     private fun setShoppingList(newItemList: ArrayList<ShoppingItem>) {

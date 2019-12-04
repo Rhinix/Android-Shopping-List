@@ -4,43 +4,42 @@ import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapt
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.ListFragment
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.MyListFragment
 import be.amellaa.shoppinglist.models.ShoppingList
+import be.amellaa.shoppinglist.models.User
 
-class DataFetcher : CommunicationInterface {
+class DataFetcher {
 
-    private var listFragment: ListFragment
+    private var communication: CommunicationInterface
 
-    constructor(listFragment: ListFragment) {
-        this.listFragment = listFragment
+    constructor(communication: CommunicationInterface) {
+        this.communication = communication
     }
 
-    fun fetchList() {
-        if(listFragment is MyListFragment){
-            ShoppingListDAO.instance.getMyList(this)
-        }
-        else {
-            ShoppingListDAO.instance.getSharedList(this)
-        }
+    fun fetchMyList() {
+        ShoppingListDAO.instance.getMyList(communication)
     }
 
-    fun createShoppingList(name: String){
-        ShoppingListDAO.instance.createShoppingList(name, this)
+    fun fetchSharedList() {
+        ShoppingListDAO.instance.getSharedList(communication)
     }
 
-    fun deleteShoppingList(id: String){
-        ShoppingListDAO.instance.deleteList(id, this)
+    fun fetchItems(id: String) {
+        ShoppingListDAO.instance.getItemFromList(id, communication)
     }
 
-    override fun communicateShoppingLists(shoppingLists: ArrayList<ShoppingList>) {
-        listFragment.activity!!.runOnUiThread {
-            listFragment.setShoppingList(shoppingLists)
-        }
+    fun createShoppingList(name: String) {
+        ShoppingListDAO.instance.createShoppingList(name, communication)
     }
 
-    override fun communicateACode(code: Int) {
-        listFragment.activity!!.runOnUiThread {
-            when(code){
-                200 -> fetchList()
-            }
-        }
+    fun deleteShoppingList(id: String) {
+        ShoppingListDAO.instance.deleteList(id, communication)
     }
+
+    fun login(user: User) {
+        ShoppingListDAO.instance.login(user, communication)
+    }
+
+    fun Signup(user: User) {
+        ShoppingListDAO.instance.signUp(user, communication)
+    }
+
 }

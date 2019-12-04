@@ -13,7 +13,7 @@ import kotlin.collections.ArrayList
 import android.R.string
 import android.util.Log
 import okhttp3.Response
-
+import java.util.*
 
 
 class ShoppingListDAO {
@@ -69,7 +69,7 @@ class ShoppingListDAO {
         }
     }
 
-    fun login(user: User, communicationInterface: CommunicationInterface){
+    fun login(user: User, communicationInterface: CommunicationInterface) {
         val body = FormBody.Builder()
             .add("email", user.email)
             .add("password", user.password)
@@ -90,7 +90,7 @@ class ShoppingListDAO {
                     TOKEN = jsonObject.getString("token")
                 }
 
-                communicationInterface.communicateACode(response.code())
+                communicationInterface.communicateData(response.code())
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -100,7 +100,7 @@ class ShoppingListDAO {
         })
     }
 
-    fun signUp(newUser: User, communicationInterface: CommunicationInterface){
+    fun signUp(newUser: User, communicationInterface: CommunicationInterface) {
         val body = FormBody.Builder()
             .add("email", newUser.email)
             .add("password", newUser.password)
@@ -113,7 +113,7 @@ class ShoppingListDAO {
 
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                communicationInterface.communicateACode(response.code())
+                communicationInterface.communicateData(response.code())
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -121,7 +121,7 @@ class ShoppingListDAO {
         })
     }
 
-    fun getMyList(communicationInterface: CommunicationInterface){
+    fun getMyList(communicationInterface: CommunicationInterface) {
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")
@@ -148,7 +148,7 @@ class ShoppingListDAO {
                     newShoppingList.nbArticles = jsonObject.getInt("nbArticles")
                     newShoppingListArray.add(newShoppingList)
                 }
-                communicationInterface.communicateShoppingLists(newShoppingListArray)
+                communicationInterface.communicateData(newShoppingListArray)
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -186,7 +186,7 @@ class ShoppingListDAO {
                     newShoppingList.nbArticles = jsonObject.getInt("nbArticles")
                     newShoppingListArray.add(newShoppingList)
                 }
-                communicationInterface.communicateShoppingLists(newShoppingListArray)
+                communicationInterface.communicateData(newShoppingListArray)
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -225,7 +225,7 @@ class ShoppingListDAO {
                     newShoppingItem.qty = jsonObject.getInt("qty")
                     newItemList.add(newShoppingItem)
                 }
-                communicationInterface.communicateShoppingItems(newItemList)
+                communicationInterface.communicateData(newItemList)
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -235,7 +235,7 @@ class ShoppingListDAO {
         })
     }
 
-    fun createShoppingList(name: String, communicationInterface: CommunicationInterface){
+    fun createShoppingList(name: String, communicationInterface: CommunicationInterface) {
         var postData = JSONObject()
         postData.put("name", name)
         postData.put("articlesList", JSONArray())
@@ -254,7 +254,7 @@ class ShoppingListDAO {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                communicationInterface.communicateACode(response.code())
+                communicationInterface.communicateData(response.code())
             }
         })
 
@@ -279,7 +279,7 @@ class ShoppingListDAO {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                communicationInterface.communicateACode(response.code())
+                communicationInterface.communicateData(response.code())
             }
         })
     }

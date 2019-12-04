@@ -14,9 +14,11 @@ import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.ProcessResponseCode
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
 import be.amellaa.shoppinglist.dao.CommunicationInterface
+import be.amellaa.shoppinglist.dao.DataFetcher
 import be.amellaa.shoppinglist.models.User
+import java.util.*
 
-class LoginActivity : Activity(), ProcessResponseCode {
+class LoginActivity : Activity(), ProcessResponseCode, CommunicationInterface {
 
 
     lateinit var mLinkSignup: TextView
@@ -24,6 +26,7 @@ class LoginActivity : Activity(), ProcessResponseCode {
     lateinit var mEmailEditText: EditText
     lateinit var mPasswordEditText: EditText
     lateinit var mProgressDialog: ProgressDialog
+    lateinit var mDataFetcher: DataFetcher
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +37,7 @@ class LoginActivity : Activity(), ProcessResponseCode {
     }
 
     private fun initializeComponent() {
+        this.mDataFetcher = DataFetcher(this)
         this.mLinkSignup = findViewById(R.id.link_signup)
         this.mLoginButton = findViewById(R.id.login_button)
         this.mEmailEditText = findViewById(R.id.input_email)
@@ -55,18 +59,21 @@ class LoginActivity : Activity(), ProcessResponseCode {
 
             val user = User(email, password)
 
-            ShoppingListDAO.instance.login(user, object : CommunicationInterface {
-                override fun communicateACode(code: Int) {
-                    runOnUiThread {
-                        processCode(code)
-                    }
-                }
-            })
+            mDataFetcher.login(user)
         } else {
             Toast.makeText(this, "Fields are not valid", Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun areFieldsValid(): Boolean {
+        return this.mEmailEditText.length() > 0 && this.mPasswordEditText.length() > 1
+    }
+
+    override fun <T> communicateData(data: T) {
+        runOnUiThread {
+            processCode(data as Int)
+        }
+    }
 
     override fun processCode(code: Int) {
         mProgressDialog.dismiss()
@@ -80,10 +87,6 @@ class LoginActivity : Activity(), ProcessResponseCode {
         val intent = Intent(context, cls)
         startActivity(intent)
         finish()
-    }
-
-    private fun areFieldsValid(): Boolean {
-        return this.mEmailEditText.length() > 0 && this.mPasswordEditText.length() > 1
     }
 
 }

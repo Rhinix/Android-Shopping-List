@@ -13,9 +13,11 @@ import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.ProcessResponseCode
 import be.amellaa.shoppinglist.dao.CommunicationInterface
+import be.amellaa.shoppinglist.dao.DataFetcher
 import be.amellaa.shoppinglist.models.User
+import java.util.*
 
-class SignUpActivity : Activity(), ProcessResponseCode {
+class SignUpActivity : Activity(), ProcessResponseCode, CommunicationInterface {
 
 
     lateinit var mEmailEditText: EditText
@@ -24,6 +26,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
     lateinit var mSignUpButton: Button
     lateinit var mLinkLogin: TextView
     lateinit var mProgressDialog: ProgressDialog
+    lateinit var mDataFetcher: DataFetcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
     }
 
     private fun initializeComponent() {
+        mDataFetcher = DataFetcher(this)
         mEmailEditText = findViewById(R.id.input_email)
         mPasswordEditText = findViewById(R.id.input_password)
         mConfirmPasswordText = findViewById(R.id.input_confirm_password)
@@ -70,15 +74,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
 
         val user = User(email, password)
 
-        ShoppingListDAO.instance.signUp(user, object : CommunicationInterface {
-            override fun communicateACode(code: Int) {
-                runOnUiThread {
-                    processCode(code)
-                }
-            }
-        })
-
-
+        mDataFetcher.Signup(user)
     }
 
     private fun areFieldsValid(): Boolean {
@@ -89,6 +85,10 @@ class SignUpActivity : Activity(), ProcessResponseCode {
 
     private fun isConfirmPasswordCorrect(): Boolean {
         return mPasswordEditText.text.toString().equals(mConfirmPasswordText.text.toString())
+    }
+
+    override fun <T>communicateData(data: T) {
+        runOnUiThread { processCode(data as Int) }
     }
 
     override fun processCode(code: Int) {

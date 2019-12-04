@@ -25,4 +25,7 @@ class SharedFragment : ListFragment() {
         return view
     }
 
+    override fun getList() {
+        mDataFetcher.fetchSharedList()
+    }
 }
