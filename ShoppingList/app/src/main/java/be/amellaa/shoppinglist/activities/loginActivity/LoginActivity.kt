@@ -79,6 +79,7 @@ class LoginActivity : Activity(), ProcessResponseCode {
     private fun changeActivity(context: Context, cls: Class<*>) {
         val intent = Intent(context, cls)
         startActivity(intent)
+        finish()
     }
 
     private fun areFieldsValid(): Boolean {
