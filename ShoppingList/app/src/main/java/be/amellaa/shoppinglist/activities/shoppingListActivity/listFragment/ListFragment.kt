@@ -4,25 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import be.amellaa.shoppinglist.R
-import be.amellaa.shoppinglist.activities.ProcessResponseCode
-import be.amellaa.shoppinglist.activities.shoppingListActivity.AddShoppingListDialog
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
-import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.dao.DataFetcher
-import be.amellaa.shoppinglist.dao.ShoppingListDAO
+import be.amellaa.shoppinglist.dao.ICommunicateData
 import be.amellaa.shoppinglist.models.ShoppingList
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
 import kotlin.collections.ArrayList
 
-abstract class ListFragment() : Fragment(), CommunicationInterface, ProcessResponseCode {
+abstract class ListFragment : Fragment(), ICommunicateData<ArrayList<ShoppingList>> {
 
     lateinit var mRecyclerView: RecyclerView
     lateinit var swipeView: SwipeRefreshLayout
@@ -45,16 +38,8 @@ abstract class ListFragment() : Fragment(), CommunicationInterface, ProcessRespo
 
     abstract fun getList()
 
-    override fun <T> communicateData(data: T) {
-
-        activity!!.runOnUiThread {
-            if (data is ArrayList<*>) {
-                setShoppingList(data as ArrayList<ShoppingList>)
-            } else {
-                processCode(data as Int)
-            }
-
-        }
+    override fun communicateData(data: ArrayList<ShoppingList>) {
+        activity!!.runOnUiThread { setShoppingList(data) }
     }
 
     fun setShoppingList(newShoppingList: ArrayList<ShoppingList>) {
@@ -67,7 +52,7 @@ abstract class ListFragment() : Fragment(), CommunicationInterface, ProcessRespo
         stopRefreshing()
     }
 
-    override fun processCode(code: Int) {
+    override fun communicateCode(code: Int) {
         when (code) {
             200 -> getList()
         }

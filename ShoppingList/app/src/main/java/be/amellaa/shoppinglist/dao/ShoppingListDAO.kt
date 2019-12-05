@@ -69,7 +69,7 @@ class ShoppingListDAO {
         }
     }
 
-    fun login(user: User, communicationInterface: CommunicationInterface) {
+    fun login(user: User, communicationInterface: ICommunicateCode) {
         val body = FormBody.Builder()
             .add("email", user.email)
             .add("password", user.password)
@@ -90,7 +90,7 @@ class ShoppingListDAO {
                     TOKEN = jsonObject.getString("token")
                 }
 
-                communicationInterface.communicateData(response.code())
+                communicationInterface.communicateCode(response.code())
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -100,7 +100,7 @@ class ShoppingListDAO {
         })
     }
 
-    fun signUp(newUser: User, communicationInterface: CommunicationInterface) {
+    fun signUp(newUser: User, communicationInterface: ICommunicateCode) {
         val body = FormBody.Builder()
             .add("email", newUser.email)
             .add("password", newUser.password)
@@ -113,7 +113,7 @@ class ShoppingListDAO {
 
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                communicationInterface.communicateData(response.code())
+                communicationInterface.communicateCode(response.code())
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -121,7 +121,7 @@ class ShoppingListDAO {
         })
     }
 
-    fun getMyList(communicationInterface: CommunicationInterface) {
+    fun getMyList(communicationInterface: ICommunicateData<ArrayList<ShoppingList>>) {
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")
@@ -159,7 +159,7 @@ class ShoppingListDAO {
 
     }
 
-    fun getSharedList(communicationInterface: CommunicationInterface) {
+    fun getSharedList(communicationInterface: ICommunicateData<ArrayList<ShoppingList>>) {
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")
@@ -200,7 +200,10 @@ class ShoppingListDAO {
 
     }
 
-    fun getItemFromList(id: String, communicationInterface: CommunicationInterface) {
+    fun getItemFromList(
+        id: String,
+        communicationInterface: ICommunicateData<ArrayList<ShoppingItem>>
+    ) {
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")
@@ -235,7 +238,7 @@ class ShoppingListDAO {
         })
     }
 
-    fun createShoppingList(name: String, communicationInterface: CommunicationInterface) {
+    fun createShoppingList(name: String, communicationInterface: ICommunicateCode) {
         var postData = JSONObject()
         postData.put("name", name)
         postData.put("articlesList", JSONArray())
@@ -254,7 +257,7 @@ class ShoppingListDAO {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                communicationInterface.communicateData(response.code())
+                communicationInterface.communicateCode(response.code())
             }
         })
 
@@ -264,7 +267,7 @@ class ShoppingListDAO {
 
     }
 
-    fun deleteList(id: String, communicationInterface: CommunicationInterface) {
+    fun deleteList(id: String, communicationInterface: ICommunicateCode) {
         val request = Request.Builder()
             .delete()
             .header("Authorization", "bearer $TOKEN")
@@ -279,7 +282,7 @@ class ShoppingListDAO {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                communicationInterface.communicateData(response.code())
+                communicationInterface.communicateCode(response.code())
             }
         })
     }

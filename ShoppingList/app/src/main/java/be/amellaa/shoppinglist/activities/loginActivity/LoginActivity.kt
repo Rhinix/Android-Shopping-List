@@ -9,16 +9,13 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import be.amellaa.shoppinglist.ProgressDialog
-import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
-import be.amellaa.shoppinglist.activities.ProcessResponseCode
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
-import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.dao.DataFetcher
+import be.amellaa.shoppinglist.dao.ICommunicateCode
 import be.amellaa.shoppinglist.models.User
-import java.util.*
 
-class LoginActivity : Activity(), ProcessResponseCode, CommunicationInterface {
+class LoginActivity : Activity(), ICommunicateCode {
 
 
     lateinit var mLinkSignup: TextView
@@ -69,17 +66,17 @@ class LoginActivity : Activity(), ProcessResponseCode, CommunicationInterface {
         return this.mEmailEditText.length() > 0 && this.mPasswordEditText.length() > 1
     }
 
-    override fun <T> communicateData(data: T) {
+    override fun communicateCode(code: Int) {
         runOnUiThread {
-            processCode(data as Int)
-        }
-    }
-
-    override fun processCode(code: Int) {
-        mProgressDialog.dismiss()
-        when (code) {
-            200 -> changeActivity(applicationContext, ShoppingListActivity::class.java)
-            401 -> Toast.makeText(applicationContext, "Authentication failed", Toast.LENGTH_LONG)
+            mProgressDialog.dismiss()
+            when (code) {
+                200 -> changeActivity(applicationContext, ShoppingListActivity::class.java)
+                401 -> Toast.makeText(
+                    applicationContext,
+                    "Authentication failed",
+                    Toast.LENGTH_LONG
+                )
+            }
         }
     }
 

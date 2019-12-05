@@ -3,27 +3,34 @@ package be.amellaa.shoppinglist.dao
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.ListFragment
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.MyListFragment
+import be.amellaa.shoppinglist.models.ShoppingItem
 import be.amellaa.shoppinglist.models.ShoppingList
 import be.amellaa.shoppinglist.models.User
 
 class DataFetcher {
 
-    private var communication: CommunicationInterface
+    private var communication: ICommunicateCode
 
-    constructor(communication: CommunicationInterface) {
+    constructor(communication: ICommunicateCode) {
         this.communication = communication
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun fetchMyList() {
-        ShoppingListDAO.instance.getMyList(communication)
+        ShoppingListDAO.instance.getMyList((communication as ICommunicateData<ArrayList<ShoppingList>>))
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun fetchSharedList() {
-        ShoppingListDAO.instance.getSharedList(communication)
+        ShoppingListDAO.instance.getSharedList(communication as ICommunicateData<ArrayList<ShoppingList>>)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun fetchItems(id: String) {
-        ShoppingListDAO.instance.getItemFromList(id, communication)
+        ShoppingListDAO.instance.getItemFromList(
+            id,
+            communication as ICommunicateData<ArrayList<ShoppingItem>>
+        )
     }
 
     fun createShoppingList(name: String) {
