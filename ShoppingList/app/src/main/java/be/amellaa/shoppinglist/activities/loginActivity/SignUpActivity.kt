@@ -9,13 +9,12 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import be.amellaa.shoppinglist.ProgressDialog
-import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.R
-import be.amellaa.shoppinglist.activities.ProcessResponseCode
-import be.amellaa.shoppinglist.dao.CommunicationInterface
+import be.amellaa.shoppinglist.dao.DataFetcher
+import be.amellaa.shoppinglist.dao.ICommunicateCode
 import be.amellaa.shoppinglist.models.User
 
-class SignUpActivity : Activity(), ProcessResponseCode {
+class SignUpActivity : Activity(), ICommunicateCode {
 
 
     lateinit var mEmailEditText: EditText
@@ -24,6 +23,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
     lateinit var mSignUpButton: Button
     lateinit var mLinkLogin: TextView
     lateinit var mProgressDialog: ProgressDialog
+    lateinit var mDataFetcher: DataFetcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +33,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
     }
 
     private fun initializeComponent() {
+        mDataFetcher = DataFetcher(this)
         mEmailEditText = findViewById(R.id.input_email)
         mPasswordEditText = findViewById(R.id.input_password)
         mConfirmPasswordText = findViewById(R.id.input_confirm_password)
@@ -70,15 +71,7 @@ class SignUpActivity : Activity(), ProcessResponseCode {
 
         val user = User(email, password)
 
-        ShoppingListDAO.instance.signUp(user, object : CommunicationInterface {
-            override fun communicateACode(code: Int) {
-                runOnUiThread {
-                    processCode(code)
-                }
-            }
-        })
-
-
+        mDataFetcher.Signup(user)
     }
 
     private fun areFieldsValid(): Boolean {
@@ -91,11 +84,13 @@ class SignUpActivity : Activity(), ProcessResponseCode {
         return mPasswordEditText.text.toString().equals(mConfirmPasswordText.text.toString())
     }
 
-    override fun processCode(code: Int) {
-        mProgressDialog.dismiss()
-        when (code) {
-            200 -> changeActivity(applicationContext, LoginActivity::class.java)
-            409 -> makeToast("This email is already registered", Toast.LENGTH_LONG)
+    override fun communicateCode(code: Int) {
+        runOnUiThread {
+            mProgressDialog.dismiss()
+            when (code) {
+                200 -> changeActivity(applicationContext, LoginActivity::class.java)
+                409 -> makeToast("This email is already registered", Toast.LENGTH_LONG)
+            }
         }
     }
 

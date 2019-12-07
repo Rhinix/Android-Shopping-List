@@ -4,22 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import be.amellaa.shoppinglist.R
-import be.amellaa.shoppinglist.activities.shoppingListActivity.AddShoppingListDialog
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
-import be.amellaa.shoppinglist.dao.CommunicationInterface
 import be.amellaa.shoppinglist.dao.DataFetcher
-import be.amellaa.shoppinglist.dao.ShoppingListDAO
+import be.amellaa.shoppinglist.dao.ICommunicateData
 import be.amellaa.shoppinglist.models.ShoppingList
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlin.collections.ArrayList
 
-abstract class ListFragment() : Fragment() {
+abstract class ListFragment : Fragment(), ICommunicateData<ArrayList<ShoppingList>> {
 
     lateinit var mRecyclerView: RecyclerView
     lateinit var swipeView: SwipeRefreshLayout
@@ -40,18 +36,26 @@ abstract class ListFragment() : Fragment() {
         return view
     }
 
-    fun getList(){
-        mDataFetcher.fetchList()
+    abstract fun getList()
+
+    override fun communicateData(data: ArrayList<ShoppingList>) {
+        activity!!.runOnUiThread { setShoppingList(data) }
     }
 
     fun setShoppingList(newShoppingList: ArrayList<ShoppingList>) {
         val adapterShopping: ShoppingListAdapter =
-                ShoppingListAdapter(
-                    newShoppingList
-                )
+            ShoppingListAdapter(
+                newShoppingList
+            )
         mRecyclerView.adapter = adapterShopping
         (mRecyclerView.adapter as ShoppingListAdapter).notifyDataSetChanged()
         stopRefreshing()
+    }
+
+    override fun communicateCode(code: Int) {
+        when (code) {
+            200 -> getList()
+        }
     }
 
     private fun stopRefreshing() {

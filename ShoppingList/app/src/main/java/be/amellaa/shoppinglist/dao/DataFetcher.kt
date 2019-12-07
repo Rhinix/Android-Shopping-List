@@ -3,44 +3,50 @@ package be.amellaa.shoppinglist.dao
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.ListFragment
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.MyListFragment
+import be.amellaa.shoppinglist.models.ShoppingItem
 import be.amellaa.shoppinglist.models.ShoppingList
+import be.amellaa.shoppinglist.models.User
 
-class DataFetcher : CommunicationInterface {
+class DataFetcher {
 
-    private var listFragment: ListFragment
+    private var communication: ICommunicateCode
 
-    constructor(listFragment: ListFragment) {
-        this.listFragment = listFragment
+    constructor(communication: ICommunicateCode) {
+        this.communication = communication
     }
 
-    fun fetchList() {
-        if(listFragment is MyListFragment){
-            ShoppingListDAO.instance.getMyList(this)
-        }
-        else {
-            ShoppingListDAO.instance.getSharedList(this)
-        }
+    @Suppress("UNCHECKED_CAST")
+    fun fetchMyList() {
+        ShoppingListDAO.instance.getMyList((communication as ICommunicateData<ArrayList<ShoppingList>>))
     }
 
-    fun createShoppingList(name: String){
-        ShoppingListDAO.instance.createShoppingList(name, this)
+    @Suppress("UNCHECKED_CAST")
+    fun fetchSharedList() {
+        ShoppingListDAO.instance.getSharedList(communication as ICommunicateData<ArrayList<ShoppingList>>)
     }
 
-    fun deleteShoppingList(id: String){
-        ShoppingListDAO.instance.deleteList(id, this)
+    @Suppress("UNCHECKED_CAST")
+    fun fetchItems(id: String) {
+        ShoppingListDAO.instance.getItemFromList(
+            id,
+            communication as ICommunicateData<ArrayList<ShoppingItem>>
+        )
     }
 
-    override fun communicateShoppingLists(shoppingLists: ArrayList<ShoppingList>) {
-        listFragment.activity!!.runOnUiThread {
-            listFragment.setShoppingList(shoppingLists)
-        }
+    fun createShoppingList(name: String) {
+        ShoppingListDAO.instance.createShoppingList(name, communication)
     }
 
-    override fun communicateACode(code: Int) {
-        listFragment.activity!!.runOnUiThread {
-            when(code){
-                200 -> fetchList()
-            }
-        }
+    fun deleteShoppingList(id: String) {
+        ShoppingListDAO.instance.deleteList(id, communication)
     }
+
+    fun login(user: User) {
+        ShoppingListDAO.instance.login(user, communication)
+    }
+
+    fun Signup(user: User) {
+        ShoppingListDAO.instance.signUp(user, communication)
+    }
+
 }
