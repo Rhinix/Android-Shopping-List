@@ -11,6 +11,8 @@ import java.lang.RuntimeException
 import javax.net.ssl.*
 import kotlin.collections.ArrayList
 import android.R.string
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.util.Log
 import okhttp3.Response
 import java.util.*
@@ -18,6 +20,7 @@ import java.util.*
 
 class ShoppingListDAO {
 
+    var TOKEN = ""
 
     companion object {
         val instance = ShoppingListDAO()
@@ -28,7 +31,6 @@ class ShoppingListDAO {
         const val SHOPPINGLIST_URL = "/shoppingList/"
         const val MY_LIST_URL = "/shoppingList/MyLists/"
         const val SHARED_LIST_URL = "/shoppingList/SharedLists/"
-        var TOKEN = ""
 
 
         private fun getOkHttpClient(): OkHttpClient {
@@ -69,7 +71,7 @@ class ShoppingListDAO {
         }
     }
 
-    fun login(user: User, communicationInterface: ICommunicateCode) {
+    fun login(user: User, communicationInterface: ICommunicateData<User>) {
         val body = FormBody.Builder()
             .add("email", user.email)
             .add("password", user.password)
@@ -87,7 +89,8 @@ class ShoppingListDAO {
                 val jsonObject = JSONObject(res)
 
                 if (response.code() == 200) {
-                    TOKEN = jsonObject.getString("token")
+                    user.Token = jsonObject.getString("token")
+                    communicationInterface.communicateData(user)
                 }
 
                 communicationInterface.communicateCode(response.code())
@@ -96,7 +99,6 @@ class ShoppingListDAO {
             override fun onFailure(call: Call, e: IOException) {
                 throw e
             }
-
         })
     }
 
@@ -122,6 +124,7 @@ class ShoppingListDAO {
     }
 
     fun getMyList(communicationInterface: ICommunicateData<ArrayList<ShoppingList>>) {
+
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")
