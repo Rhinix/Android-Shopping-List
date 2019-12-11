@@ -41,8 +41,9 @@ class DataFetcher {
         ShoppingListDAO.instance.deleteList(id, communication)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun login(user: User) {
-        ShoppingListDAO.instance.login(user, communication)
+        ShoppingListDAO.instance.login(user, (communication as ICommunicateData<User>))
     }
 
     fun Signup(user: User) {

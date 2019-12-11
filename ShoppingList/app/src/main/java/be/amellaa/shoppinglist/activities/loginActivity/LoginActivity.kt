@@ -1,5 +1,7 @@
 package be.amellaa.shoppinglist.activities.loginActivity
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -12,10 +14,10 @@ import be.amellaa.shoppinglist.ProgressDialog
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
 import be.amellaa.shoppinglist.dao.DataFetcher
-import be.amellaa.shoppinglist.dao.ICommunicateCode
+import be.amellaa.shoppinglist.dao.ICommunicateData
 import be.amellaa.shoppinglist.models.User
 
-class LoginActivity : Activity(), ICommunicateCode {
+class LoginActivity : Activity(), ICommunicateData<User> {
 
 
     lateinit var mLinkSignup: TextView
@@ -75,7 +77,7 @@ class LoginActivity : Activity(), ICommunicateCode {
                     applicationContext,
                     "Authentication failed",
                     Toast.LENGTH_LONG
-                )
+                ).show()
             }
         }
     }
@@ -84,6 +86,14 @@ class LoginActivity : Activity(), ICommunicateCode {
         val intent = Intent(context, cls)
         startActivity(intent)
         finish()
+    }
+
+    override fun communicateData(data: User) {
+        val account = Account(data.email, "ShoppingList")
+        val am = AccountManager.get(this)
+        am.addAccountExplicitly(account, data.password, null)
+        am.setAuthToken(account, "Token", data.Token)
+        //ShoppingListDAO.instance.TOKEN = data.Token
     }
 
 }
