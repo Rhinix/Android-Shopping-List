@@ -15,6 +15,7 @@ import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
 import be.amellaa.shoppinglist.dao.DataFetcher
 import be.amellaa.shoppinglist.dao.ICommunicateData
+import be.amellaa.shoppinglist.dao.ShoppingListDAO
 import be.amellaa.shoppinglist.models.User
 
 class LoginActivity : Activity(), ICommunicateData<User> {
@@ -30,9 +31,20 @@ class LoginActivity : Activity(), ICommunicateData<User> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkForLoggedAccount()
         setContentView(R.layout.login_layout)
         initializeComponent()
         setListeners()
+    }
+
+    private fun checkForLoggedAccount() {
+        var am = AccountManager.get(this)
+        var accounts = am.getAccountsByType("ShoppingList")
+
+        if (accounts.isNotEmpty()) {
+            ShoppingListDAO.instance.TOKEN = am.peekAuthToken(accounts[0], "Token")
+            changeActivity(applicationContext, ShoppingListActivity::class.java)
+        }
     }
 
     private fun initializeComponent() {
@@ -93,7 +105,7 @@ class LoginActivity : Activity(), ICommunicateData<User> {
         val am = AccountManager.get(this)
         am.addAccountExplicitly(account, data.password, null)
         am.setAuthToken(account, "Token", data.Token)
-        //ShoppingListDAO.instance.TOKEN = data.Token
+        ShoppingListDAO.instance.TOKEN = data.Token
     }
 
 }
