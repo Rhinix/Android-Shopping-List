@@ -19,8 +19,6 @@ import okhttp3.Response
 
 class ShoppingListDTO {
 
-    var TOKEN = ""
-
     companion object {
         val instance = ShoppingListDTO()
         val httpClient = getOkHttpClient()
