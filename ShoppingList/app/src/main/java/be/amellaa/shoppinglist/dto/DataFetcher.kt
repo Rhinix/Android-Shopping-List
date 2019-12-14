@@ -76,8 +76,9 @@ class DataFetcher {
     *
      */
 
+    @Suppress("UNCHECKED_CAST")
     fun login(user: User) {
-        ShoppingListDTO.instance.login(user, communication)
+        ShoppingListDTO.instance.login(user, communication as ICommunicateData<User>)
     }
 
     fun Signup(user: User) {

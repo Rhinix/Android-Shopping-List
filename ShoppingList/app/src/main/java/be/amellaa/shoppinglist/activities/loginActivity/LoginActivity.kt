@@ -1,5 +1,7 @@
 package be.amellaa.shoppinglist.activities.loginActivity
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -13,9 +15,11 @@ import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
 import be.amellaa.shoppinglist.dto.DataFetcher
 import be.amellaa.shoppinglist.dto.ICommunicateCode
+import be.amellaa.shoppinglist.dto.ICommunicateData
+import be.amellaa.shoppinglist.dto.ShoppingListDTO
 import be.amellaa.shoppinglist.models.User
 
-class LoginActivity : Activity(), ICommunicateCode {
+class LoginActivity : Activity(), ICommunicateData<User> {
 
 
     lateinit var mLinkSignup: TextView
@@ -28,9 +32,20 @@ class LoginActivity : Activity(), ICommunicateCode {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkForLoggedAccount()
         setContentView(R.layout.login_layout)
         initializeComponent()
         setListeners()
+    }
+
+    private fun checkForLoggedAccount() {
+        var am = AccountManager.get(this)
+        var accounts = am.getAccountsByType("ShoppingList")
+
+        if (accounts.isNotEmpty()) {
+            ShoppingListDTO.instance.TOKEN = am.peekAuthToken(accounts[0], "Token")
+            changeActivity(applicationContext, ShoppingListActivity::class.java)
+        }
     }
 
     private fun initializeComponent() {
@@ -75,7 +90,7 @@ class LoginActivity : Activity(), ICommunicateCode {
                     applicationContext,
                     "Authentication failed",
                     Toast.LENGTH_LONG
-                )
+                ).show()
             }
         }
     }
@@ -84,6 +99,14 @@ class LoginActivity : Activity(), ICommunicateCode {
         val intent = Intent(context, cls)
         startActivity(intent)
         finish()
+    }
+
+    override fun communicateData(data: User) {
+        val account = Account(data.email, "ShoppingList")
+        val am = AccountManager.get(this)
+        am.addAccountExplicitly(account, data.password, null)
+        am.setAuthToken(account, "Token", data.Token)
+        ShoppingListDTO.instance.TOKEN = data.Token
     }
 
 }

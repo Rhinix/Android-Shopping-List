@@ -10,12 +10,16 @@ import java.io.IOException
 import java.lang.RuntimeException
 import javax.net.ssl.*
 import kotlin.collections.ArrayList
+import android.R.string
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.util.Log
 import okhttp3.Response
 
 
 class ShoppingListDTO {
 
+    var TOKEN = ""
 
     companion object {
         val instance = ShoppingListDTO()
@@ -68,7 +72,7 @@ class ShoppingListDTO {
         }
     }
 
-    fun login(user: User, communicationInterface: ICommunicateCode) {
+    fun login(user: User, communicationInterface: ICommunicateData<User>) {
         val body = FormBody.Builder()
             .add("email", user.email)
             .add("password", user.password)
@@ -86,7 +90,8 @@ class ShoppingListDTO {
                 val jsonObject = JSONObject(res)
 
                 if (response.code() == 200) {
-                    TOKEN = jsonObject.getString("token")
+                    user.Token = jsonObject.getString("token")
+                    communicationInterface.communicateData(user)
                 }
 
                 communicationInterface.communicateCode(response.code())
@@ -95,7 +100,6 @@ class ShoppingListDTO {
             override fun onFailure(call: Call, e: IOException) {
                 throw e
             }
-
         })
     }
 
@@ -121,6 +125,7 @@ class ShoppingListDTO {
     }
 
     fun getMyList(communicationInterface: ICommunicateData<ArrayList<ShoppingList>>) {
+
         val request = Request.Builder()
             .get()
             .header("Authorization", "bearer $TOKEN")

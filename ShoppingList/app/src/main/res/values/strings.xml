@@ -20,8 +20,9 @@
     <string name="addShoppingOk">Add</string>
     <string name="modifyShoppingItemTitle">Modify ShoppingItem</string>
     <string name="dialogOptions">Options</string>
-
     <string name="loading">Loading...</string>
     <string name="addShoppingListQty">Quantity</string>
+
+    <string name="account_type">ShoppingList</string>
 
 </resources>
