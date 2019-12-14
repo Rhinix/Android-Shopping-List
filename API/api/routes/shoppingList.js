@@ -53,7 +53,6 @@ router.get("/SharedLists", checkAuth, (req, res) => {
     .exec()
     .then(result => {
       if (result) {
-        console.log(result);
 
         let shoppingListArray = [];
         let newShoppingList;
@@ -105,7 +104,6 @@ router.post("/", checkAuth, (req, res) => {
   const userId = jwt.decode(token).userId;
 
   let listName = req.body.name;
-  console.log(listName);
   let articlesList = req.body.articlesList||[];
 
   let newArticle;
@@ -135,8 +133,7 @@ router.post("/", checkAuth, (req, res) => {
   shoppingList
     .save()
     .then(result => {
-      console.log(result);
-      res.status(200).json({ message: "List created" });
+      res.status(201).json({ message: "List created" });
     })
     .catch(err => {
       res.status(500).json({ error: err });
@@ -153,7 +150,7 @@ router.delete("/:listId", checkAuth, (req, res) => {
         shoppingList.articlesList.forEach(article => {
           article.remove();
         });
-        res.status(200).json({ message: "List deleted" });
+        res.status(204).json({ message: "List deleted" });
       } else {
         res.status(404).json({ message: "List not found" });
       }
@@ -166,8 +163,6 @@ router.delete("/:listId", checkAuth, (req, res) => {
 router.patch("/StopShared/:listId", checkAuth, (req, res) => {
   let id = req.params.listId;
   let deletedUserId = req.body.userId;
-
-  console.log("deletedId: " + deletedUserId);
 
   ShoppingList.findByIdAndUpdate(id, {
     $pull: { users: deletedUserId }
@@ -184,16 +179,14 @@ router.patch("/StopShared/:listId", checkAuth, (req, res) => {
 router.patch("/:listId", checkAuth, (req, res) => {
   let id = req.params.listId;
 
-  let addedArticles = req.body.addedArticles;
-  let modifiedArticles = req.body.modifiedArticles;
-  let deletedArticles = req.body.deletedArticles;
+  let name = req.body.name;
 
   ShoppingList.findById(id)
     .populate("articlesList", "name qty checked _id")
     .exec()
     .then(shoppingList => {
       if (shoppingList) {
-        if (addedArticles) {
+        /*if (addedArticles) {
           let newArticles = [];
 
           addedArticles.forEach(article => {
@@ -237,8 +230,11 @@ router.patch("/:listId", checkAuth, (req, res) => {
             console.log(shoppingList.articlesList);
           });
           Article.deleteMany({ _id: { $in: deletedArticles } }).exec();
+        }*/
+        if(name){
+          shoppingList.name = name;
+          shoppingList.save();
         }
-        shoppingList.save();
         res.status(200).json({ message: "list updated" });
       } else {
         res.status(404).json({ message: "list not found" });

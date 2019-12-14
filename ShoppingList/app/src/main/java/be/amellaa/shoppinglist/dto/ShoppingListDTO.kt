@@ -1,4 +1,4 @@
-package be.amellaa.shoppinglist.dao
+package be.amellaa.shoppinglist.dto
 
 import be.amellaa.shoppinglist.models.ShoppingItem
 import be.amellaa.shoppinglist.models.ShoppingList
@@ -10,24 +10,23 @@ import java.io.IOException
 import java.lang.RuntimeException
 import javax.net.ssl.*
 import kotlin.collections.ArrayList
-import android.R.string
 import android.util.Log
 import okhttp3.Response
-import java.util.*
 
 
-class ShoppingListDAO {
+class ShoppingListDTO {
 
 
     companion object {
-        val instance = ShoppingListDAO()
+        val instance = ShoppingListDTO()
         val httpClient = getOkHttpClient()
-        const val DOMAIN_URL = "https://192.168.137.1:3000"
+        const val DOMAIN_URL = "https://192.168.1.41:3000"
         const val USER_LOGIN_URL = "/user/login/"
         const val USER_SIGNUP_URL = "/user/signup/"
         const val SHOPPINGLIST_URL = "/shoppingList/"
         const val MY_LIST_URL = "/shoppingList/MyLists/"
         const val SHARED_LIST_URL = "/shoppingList/SharedLists/"
+        const val ARTICLE_URL = "/article/"
         var TOKEN = ""
 
 
@@ -196,10 +195,6 @@ class ShoppingListDAO {
         })
     }
 
-    fun saveList() {
-
-    }
-
     fun getItemFromList(
         id: String,
         communicationInterface: ICommunicateData<ArrayList<ShoppingItem>>
@@ -226,6 +221,7 @@ class ShoppingListDAO {
                     newShoppingItem.id = jsonObject.getString("_id")
                     newShoppingItem.name = jsonObject.getString("name")
                     newShoppingItem.qty = jsonObject.getInt("qty")
+                    newShoppingItem.checked = jsonObject.getBoolean("checked")
                     newItemList.add(newShoppingItem)
                 }
                 communicationInterface.communicateData(newItemList)
@@ -263,8 +259,27 @@ class ShoppingListDAO {
 
     }
 
-    fun patchList() {
+    fun patchList(name: String, id: String, communicationInterface: ICommunicateCode) {
+        var postData = JSONObject()
+        postData.put("name", name)
+        val body = RequestBody.create(MediaType.parse("application/json"), postData.toString())
+        val request = Request.Builder()
+            .patch(body)
+            .header("Authorization", "bearer $TOKEN")
+            .url(DOMAIN_URL + SHOPPINGLIST_URL + id)
+            .build()
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                val mMessage = e.message.toString()
+                Log.w("failure Response", mMessage)
+                //call.cancel();
+            }
 
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                communicationInterface.communicateCode(response.code())
+            }
+        })
     }
 
     fun deleteList(id: String, communicationInterface: ICommunicateCode) {
@@ -287,7 +302,79 @@ class ShoppingListDAO {
         })
     }
 
-    fun setHeader(fieldName: String, value: String) {
+    fun deleteItem(id: String, communicationInterface: ICommunicateCode) {
+        val request = Request.Builder()
+            .delete()
+            .header("Authorization", "bearer $TOKEN")
+            .url(DOMAIN_URL + ARTICLE_URL + id)
+            .build()
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                val mMessage = e.message.toString()
+                Log.w("failure Response", mMessage)
+                //call.cancel();
+            }
 
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                communicationInterface.communicateCode(response.code())
+            }
+        })
+    }
+
+    fun createItem(name: String, qty: String, listId: String, communicationInterface: ICommunicateCode){
+        var postData = JSONObject()
+        postData.put("listId", listId)
+        postData.put("name", name)
+        postData.put("qty", qty)
+        val body = RequestBody.create(MediaType.parse("application/json"), postData.toString())
+        val request = Request.Builder()
+            .post(body)
+            .header("Authorization", "bearer $TOKEN")
+            .url(DOMAIN_URL + ARTICLE_URL)
+            .build()
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                val mMessage = e.message.toString()
+                Log.w("failure Response", mMessage)
+                //call.cancel();
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                communicationInterface.communicateCode(response.code())
+            }
+        })
+    }
+
+    fun patchItem(name: String?, qty: String?, checked: Boolean?, id: String, communicationInterface: ICommunicateCode) {
+        var postData = JSONObject()
+        if(name != null){
+            postData.put("name", name)
+        }
+        if(qty != null){
+            postData.put("qty", qty)
+        }
+        if(checked != null){
+            postData.put("checked", checked)
+        }
+        val body = RequestBody.create(MediaType.parse("application/json"), postData.toString())
+        val request = Request.Builder()
+            .patch(body)
+            .header("Authorization", "bearer $TOKEN")
+            .url(DOMAIN_URL + ARTICLE_URL + id)
+            .build()
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                val mMessage = e.message.toString()
+                Log.w("failure Response", mMessage)
+                //call.cancel();
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                communicationInterface.communicateCode(response.code())
+            }
+        })
     }
 }

@@ -18,10 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.loginActivity.SignUpActivity" />
+        <activity android:name=".activities.loginActivity.SignUpActivity"/>
         <activity android:name=".activities.shoppingListActivity.ShoppingListActivity" />
-        <activity android:name=".activities.shoppingListActivity.ShoppingItemActivity" />
-        <activity android:name=".activities.shoppingListActivity.AddShoppingListDialog"/>
+        <activity android:name=".activities.shoppingListActivity.ShoppingItemActivity"/>
 
     </application>
 

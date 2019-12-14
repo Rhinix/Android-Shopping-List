@@ -1,61 +1,28 @@
 package be.amellaa.shoppinglist.activities.shoppingListActivity
 
-import android.app.Activity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import be.amellaa.shoppinglist.R
-import be.amellaa.shoppinglist.dao.DataFetcher
-import be.amellaa.shoppinglist.dao.ICommunicateData
-import be.amellaa.shoppinglist.models.ShoppingItem
+import be.amellaa.shoppinglist.activities.shoppingListActivity.itemFragment.MyItemsFragment
+import be.amellaa.shoppinglist.activities.shoppingListActivity.itemFragment.SharedItemFragment
 
-class ShoppingItemActivity : Activity(),
-    ICommunicateData<ArrayList<ShoppingItem>> {
+class ShoppingItemActivity: FragmentActivity() {
 
-
-    lateinit var mRecyclerView: RecyclerView
-    lateinit var swipeView: SwipeRefreshLayout
-    lateinit var mDataFetcher: DataFetcher
-    //var arrayList_details: ArrayList<ShoppingItem> = ArrayList();
+    var frag : Fragment? = supportFragmentManager.findFragmentById(R.id.shoppingitem_fragment_container)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoppingitem)
-        mDataFetcher = DataFetcher(this)
-        mRecyclerView = findViewById<RecyclerView>(R.id.itemRecyclerView) as RecyclerView
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
-        swipeView = findViewById<SwipeRefreshLayout>(R.id.itemSwipeRefresh) as SwipeRefreshLayout
-        swipeView.setOnRefreshListener { getMyList() }
-        //swipeView.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener(function = { getMyList() }))
-        getMyList()
-    }
-
-    private fun getMyList() {
-        val id = this.intent.getStringExtra("listId")
-        mDataFetcher.fetchItems(id)
-    }
-
-    override fun communicateData(data: ArrayList<ShoppingItem>) {
-        runOnUiThread { setShoppingList(data) }
-    }
-
-    override fun communicateCode(code: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun setShoppingList(newItemList: ArrayList<ShoppingItem>) {
-        val adapterShopping: ShoppingItemAdapter =
-            ShoppingItemAdapter(newItemList)
-        mRecyclerView.adapter = adapterShopping
-        (mRecyclerView.adapter as ShoppingItemAdapter).notifyDataSetChanged()
-        stopRefreshing()
-    }
-
-    private fun stopRefreshing() {
-        if (swipeView.isRefreshing) {
-            swipeView.isRefreshing = false
+        if(frag == null){
+            frag = if(intent.getStringExtra("listKind") == "MyListFragment"){
+                MyItemsFragment()
+            } else{
+                SharedItemFragment()
+            }
+            supportFragmentManager.beginTransaction().add(R.id.shoppingitem_fragment_container, frag!!).commit()
         }
     }
+
 
 }

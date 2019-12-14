@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import be.amellaa.shoppinglist.R
-import be.amellaa.shoppinglist.dao.DataFetcher
+import be.amellaa.shoppinglist.dto.DataFetcher
 
 class SharedFragment : ListFragment() {
 

@@ -11,8 +11,8 @@ import android.widget.Toast
 import be.amellaa.shoppinglist.ProgressDialog
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
-import be.amellaa.shoppinglist.dao.DataFetcher
-import be.amellaa.shoppinglist.dao.ICommunicateCode
+import be.amellaa.shoppinglist.dto.DataFetcher
+import be.amellaa.shoppinglist.dto.ICommunicateCode
 import be.amellaa.shoppinglist.models.User
 
 class LoginActivity : Activity(), ICommunicateCode {

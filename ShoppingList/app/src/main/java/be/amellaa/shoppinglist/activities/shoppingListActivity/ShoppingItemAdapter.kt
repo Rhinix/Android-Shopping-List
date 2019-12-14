@@ -2,9 +2,11 @@ package be.amellaa.shoppinglist.activities.shoppingListActivity
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import be.amellaa.shoppinglist.R
+import be.amellaa.shoppinglist.activities.shoppingListActivity.itemFragment.BaseItemFragment
 import be.amellaa.shoppinglist.models.ShoppingItem
 
 class ShoppingItemAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.Adapter<ShoppingItemAdapter.ListRowHolder>()
@@ -32,18 +34,30 @@ class ShoppingItemAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.A
     {
         lateinit var mShoppingItem: ShoppingItem
         lateinit var mNameTextView : TextView
-        lateinit var mIdTextView : TextView
+        lateinit var mQtyTextView : TextView
+        lateinit var mCheckBox: CheckBox
+        val frag = (parent.context as ShoppingItemActivity).frag as BaseItemFragment
 
         init {
             mNameTextView = itemView.findViewById(R.id.itemName)
-            mIdTextView = itemView.findViewById(R.id.itemId)
+            mQtyTextView = itemView.findViewById(R.id.itemQty)
+            mCheckBox = itemView.findViewById(R.id.itemCheck)
+            mCheckBox.setOnClickListener { _ ->
+                if(parent.context is ShoppingItemActivity){
+                    frag.onCheckBoxChecked(mShoppingItem, mCheckBox.isChecked)
+                }
+            }
+            itemView.setOnLongClickListener {
+                frag.openListChoiceDialog(mShoppingItem.id)
+            }
         }
 
         fun bind(shoppingItem: ShoppingItem)
         {
             mShoppingItem = shoppingItem
             mNameTextView.text = shoppingItem.name;
-            mIdTextView.text = shoppingItem.id;
+            mQtyTextView.text = shoppingItem.qty.toString()
+            mCheckBox.isChecked = shoppingItem.checked
         }
 
     }

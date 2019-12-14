@@ -8,7 +8,7 @@ const ShoppingList = require("../models/shoppingList");
 const Article = require("../models/article");
 
 
-router.get("/:articleId", (req, res) => {
+router.get("/:articleId", checkAuth, (req, res) => {
     let id = req.params.articleId;
     Article.findById(id)
         .select("_id name qty checked")
@@ -27,7 +27,7 @@ router.get("/:articleId", (req, res) => {
         });
 })
 
-router.post("/", (req, res) => {
+router.post("/", checkAuth, (req, res) => {
     let listId = req.body.listId;
     let articleName = req.body.name;
     let articleQty = req.body.qty || 1;
@@ -54,7 +54,7 @@ router.post("/", (req, res) => {
                 shoppingList.articlesList.push(article)
                 shoppingList.save()
                 Article.insertMany(article)
-                res.status(200).json({
+                res.status(201).json({
                     message: "Article added"
                 })
             }).catch(err => {
@@ -71,7 +71,7 @@ router.post("/", (req, res) => {
 
 })
 
-router.delete("/:articleId", (req, res) => {
+router.delete("/:articleId", checkAuth, (req, res) => {
     let id = req.params.articleId;
     Article.findById(id)
         .exec()
@@ -83,26 +83,23 @@ router.delete("/:articleId", (req, res) => {
                     .then(result => {
                         if (result) {
                             result.forEach(shoppingList => {
-                                let updatedList = []
-                                console.log(shoppingList.articlesList);
-                                
+                                let updatedList = []                                
                                 shoppingList.articlesList.forEach(art => {
                                     if(art._id != id){
                                         updatedList.push(art)
                                     }
                                 })
-                                console.log(updatedList)
                                 shoppingList.articlesList = updatedList
                                 shoppingList.save()
                             })
                             article.remove()
-                            res.status(200).json({
+                            res.status(201).json({
                                 message: "Article deleted"
                             })
 
                         } else {
                             res.status(404).json({
-                                message: "there is no list"
+                                message: "there is no article"
                             });
                         }
                     }).catch(err => {
@@ -135,11 +132,12 @@ router.patch("/:articleId", (req, res) => {
                 if (qty) {
                     article.qty = qty
                 }
-                if (checked) {
+                if ('checked' in req.body) {
                     article.checked = checked
                 }
+                
                 article.save()
-                res.status(404).json({
+                res.status(201).json({
                     message: "Article updated"
                 })
             } else {

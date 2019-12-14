@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListAdapter
-import be.amellaa.shoppinglist.dao.DataFetcher
-import be.amellaa.shoppinglist.dao.ICommunicateData
+import be.amellaa.shoppinglist.dto.DataFetcher
+import be.amellaa.shoppinglist.dto.ICommunicateData
 import be.amellaa.shoppinglist.models.ShoppingList
 import kotlin.collections.ArrayList
 
@@ -21,6 +21,15 @@ abstract class ListFragment : Fragment(), ICommunicateData<ArrayList<ShoppingLis
     lateinit var swipeView: SwipeRefreshLayout
     lateinit var mDataFetcher: DataFetcher
 
+    override fun communicateData(data: ArrayList<ShoppingList>) {
+        activity!!.runOnUiThread { setShoppingList(data) }
+    }
+
+    override fun communicateCode(code: Int) {
+        when (code) {
+            201 -> getList()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,19 +37,20 @@ abstract class ListFragment : Fragment(), ICommunicateData<ArrayList<ShoppingLis
         savedInstanceState: Bundle?
     ): View? {
         var view: View = inflater.inflate(R.layout.shoppinglist_fragment, container, false)
-        mRecyclerView = view.findViewById(R.id.recyclerView)
+        mRecyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         mRecyclerView.layoutManager = LinearLayoutManager(activity)
-        swipeView = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh) as SwipeRefreshLayout
+        swipeView = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
         swipeView.setOnRefreshListener { getList() }
         getList()
         return view
     }
 
-    abstract fun getList()
-
-    override fun communicateData(data: ArrayList<ShoppingList>) {
-        activity!!.runOnUiThread { setShoppingList(data) }
+    override fun onResume() {
+        super.onResume()
+        getList()
     }
+
+    abstract fun getList()
 
     fun setShoppingList(newShoppingList: ArrayList<ShoppingList>) {
         val adapterShopping: ShoppingListAdapter =
@@ -50,12 +60,6 @@ abstract class ListFragment : Fragment(), ICommunicateData<ArrayList<ShoppingLis
         mRecyclerView.adapter = adapterShopping
         (mRecyclerView.adapter as ShoppingListAdapter).notifyDataSetChanged()
         stopRefreshing()
-    }
-
-    override fun communicateCode(code: Int) {
-        when (code) {
-            200 -> getList()
-        }
     }
 
     private fun stopRefreshing() {

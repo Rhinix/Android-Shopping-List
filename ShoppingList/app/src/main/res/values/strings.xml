@@ -14,9 +14,14 @@
 
     <string name="addShoppingListName">Name</string>
     <string name="addShoppingListTitle">New ShoppingList</string>
+    <string name="modifyShoppingListTitle">Modify ShoppingList</string>
+    <string name="addShoppingItemTitle">New ShoppingItem</string>
     <string name="addShoppingCancel">Cancel</string>
     <string name="addShoppingOk">Add</string>
+    <string name="modifyShoppingItemTitle">Modify ShoppingItem</string>
+    <string name="dialogOptions">Options</string>
 
     <string name="loading">Loading...</string>
+    <string name="addShoppingListQty">Quantity</string>
 
 </resources>
