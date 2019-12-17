@@ -43,7 +43,7 @@ class LoginActivity : Activity(), ICommunicateData<User> {
         var accounts = am.getAccountsByType("ShoppingList")
 
         if (accounts.isNotEmpty()) {
-            ShoppingListDTO.instance.TOKEN = am.peekAuthToken(accounts[0], "Token")
+            ShoppingListDTO.TOKEN = am.peekAuthToken(accounts[0], "Token")
             changeActivity(applicationContext, ShoppingListActivity::class.java)
         }
     }
@@ -106,7 +106,7 @@ class LoginActivity : Activity(), ICommunicateData<User> {
         val am = AccountManager.get(this)
         am.addAccountExplicitly(account, data.password, null)
         am.setAuthToken(account, "Token", data.Token)
-        ShoppingListDTO.instance.TOKEN = data.Token
+        ShoppingListDTO.TOKEN = data.Token
     }
 
 }
