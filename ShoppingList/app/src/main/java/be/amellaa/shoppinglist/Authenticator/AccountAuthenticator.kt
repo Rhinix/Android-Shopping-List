@@ -8,12 +8,18 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.session.MediaSession
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import be.amellaa.shoppinglist.activities.loginActivity.LoginActivity
 
 class AccountAuthenticator(context: Context) : AbstractAccountAuthenticator(context) {
+
+    companion object {
+        const val ACCOUNT_TYPE = "ShoppingList"
+        const val TOKEN_TYPE = "Token"
+    }
 
     private var mContext = context
 
@@ -93,5 +99,10 @@ class AccountAuthenticator(context: Context) : AbstractAccountAuthenticator(cont
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    fun deleteAccount() {
+        var accountManager = AccountManager.get(mContext)
+        var loggedAccount = accountManager.getAccountsByType(ACCOUNT_TYPE)
 
+        accountManager.removeAccountExplicitly(loggedAccount[0])
+    }
 }

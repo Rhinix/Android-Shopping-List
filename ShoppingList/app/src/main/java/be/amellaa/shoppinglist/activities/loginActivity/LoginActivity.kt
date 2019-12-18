@@ -10,11 +10,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import be.amellaa.shoppinglist.Authenticator.AccountAuthenticator
 import be.amellaa.shoppinglist.ProgressDialog
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
 import be.amellaa.shoppinglist.dto.DataFetcher
-import be.amellaa.shoppinglist.dto.ICommunicateCode
 import be.amellaa.shoppinglist.dto.ICommunicateData
 import be.amellaa.shoppinglist.dto.ShoppingListDTO
 import be.amellaa.shoppinglist.models.User
@@ -40,10 +40,10 @@ class LoginActivity : Activity(), ICommunicateData<User> {
 
     private fun checkForLoggedAccount() {
         var am = AccountManager.get(this)
-        var accounts = am.getAccountsByType("ShoppingList")
+        var accounts = am.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE)
 
         if (accounts.isNotEmpty()) {
-            ShoppingListDTO.TOKEN = am.peekAuthToken(accounts[0], "Token")
+            ShoppingListDTO.TOKEN = am.peekAuthToken(accounts[0], AccountAuthenticator.TOKEN_TYPE)
             changeActivity(applicationContext, ShoppingListActivity::class.java)
         }
     }
@@ -102,10 +102,10 @@ class LoginActivity : Activity(), ICommunicateData<User> {
     }
 
     override fun communicateData(data: User) {
-        val account = Account(data.email, "ShoppingList")
+        val account = Account(data.email, AccountAuthenticator.ACCOUNT_TYPE)
         val am = AccountManager.get(this)
         am.addAccountExplicitly(account, data.password, null)
-        am.setAuthToken(account, "Token", data.Token)
+        am.setAuthToken(account, AccountAuthenticator.TOKEN_TYPE, data.Token)
         ShoppingListDTO.TOKEN = data.Token
     }
 
