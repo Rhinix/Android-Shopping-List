@@ -29,7 +29,7 @@ class MyListFragment : ListFragment(), DialogListener {
     ): View? {
         mDataFetcher = DataFetcher(this)
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        mFloatingButton = view!!.findViewById<FloatingActionButton>(R.id.addListButton)
+        mFloatingButton = view!!.findViewById(R.id.addListButton)
         //setSwipeToDismiss()
         mFloatingButton.setOnClickListener {
             val mWithEntryDialogFragment =
