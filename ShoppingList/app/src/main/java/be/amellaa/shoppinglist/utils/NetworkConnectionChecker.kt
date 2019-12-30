@@ -5,6 +5,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 
+/**
+ *  Class for check if device is connected to a network
+ */
 class NetworkConnectionChecker {
     companion object {
         fun isNetworkAvailable(context: Context): Boolean {

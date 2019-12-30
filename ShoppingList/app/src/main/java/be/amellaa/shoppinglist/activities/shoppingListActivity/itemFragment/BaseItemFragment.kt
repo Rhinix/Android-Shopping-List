@@ -21,6 +21,9 @@ import be.amellaa.shoppinglist.dto.ICommunicateData
 import be.amellaa.shoppinglist.models.ShoppingItem
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+/**
+ *  Base class for items fragment
+ */
 abstract class BaseItemFragment : Fragment(),
     ICommunicateData<ArrayList<ShoppingItem>>, DialogListener {
 
@@ -104,6 +107,9 @@ abstract class BaseItemFragment : Fragment(),
         return view
     }
 
+    /**
+     *  Implementation of swipe to delete an item in the RecyclerView
+     */
     private fun setSwipeToDismiss() {
         val touch: ItemTouchHelper = ItemTouchHelper(object :
             ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {

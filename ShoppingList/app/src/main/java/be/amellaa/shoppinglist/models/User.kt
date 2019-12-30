@@ -1,5 +1,8 @@
 package be.amellaa.shoppinglist.models
 
+/**
+ *  Model for an User
+ */
 class User {
     var email: String
     var password: String

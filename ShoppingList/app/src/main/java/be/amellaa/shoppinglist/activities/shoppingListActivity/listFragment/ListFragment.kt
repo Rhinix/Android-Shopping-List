@@ -17,6 +17,9 @@ import be.amellaa.shoppinglist.dto.ICommunicateData
 import be.amellaa.shoppinglist.models.ShoppingList
 import kotlin.collections.ArrayList
 
+/**
+ * Base class for all Fragment with ShoppingList
+ */
 abstract class ListFragment : Fragment(), ICommunicateData<ArrayList<ShoppingList>> {
 
     lateinit var mRecyclerView: RecyclerView

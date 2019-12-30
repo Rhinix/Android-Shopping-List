@@ -16,6 +16,10 @@ import be.amellaa.shoppinglist.activities.TabAdapter
 import be.amellaa.shoppinglist.activities.loginActivity.LoginActivity
 import com.google.android.material.tabs.TabLayout
 
+
+/**
+ *  Activity with tabs, that host the two kinds of ListFragment
+ */
 class ShoppingListActivity : FragmentActivity() {
 
     lateinit var mViewPager: ViewPager

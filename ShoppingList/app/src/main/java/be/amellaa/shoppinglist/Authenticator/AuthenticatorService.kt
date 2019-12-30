@@ -4,6 +4,9 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 
+/**
+ *  Service for authentication
+ */
 class AuthenticatorService : Service() {
     private lateinit var mAuthenticator: AccountAuthenticator
 

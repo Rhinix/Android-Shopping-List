@@ -1,5 +1,8 @@
 package be.amellaa.shoppinglist.models
 
+/**
+ *  Model for a ShoppingList
+ */
 class ShoppingList
 {
     lateinit var id:String

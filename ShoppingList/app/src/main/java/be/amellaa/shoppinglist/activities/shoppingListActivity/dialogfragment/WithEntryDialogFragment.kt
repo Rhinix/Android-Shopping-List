@@ -8,6 +8,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import be.amellaa.shoppinglist.R
 
+/**
+ *  DialogFragment with on entry, to create or update lists
+ */
 class WithEntryDialogFragment(var idStringTitle: Int) : DialogFragment(){
 
     private lateinit var listener: DialogListener

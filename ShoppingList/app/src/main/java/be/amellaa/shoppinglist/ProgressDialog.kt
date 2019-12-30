@@ -4,6 +4,9 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 
+/**
+ *  A simple ProgressDialog
+ */
 class ProgressDialog {
     private val dialog: Dialog
 

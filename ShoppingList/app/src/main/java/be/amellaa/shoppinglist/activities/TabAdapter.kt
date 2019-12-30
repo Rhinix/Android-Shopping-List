@@ -6,6 +6,9 @@ import androidx.fragment.app.FragmentPagerAdapter
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.MyListFragment
 import be.amellaa.shoppinglist.activities.shoppingListActivity.listFragment.SharedFragment
 
+/**
+ *  Adapter for ShoppingList's TabLayout
+ */
 class TabAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm){
 
     override fun getItem(position: Int): Fragment {
@@ -14,7 +17,6 @@ class TabAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm){
                 MyListFragment()
             }
             else -> SharedFragment()
-            //SecondFragment()
         }
     }
 
@@ -24,8 +26,8 @@ class TabAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm){
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
-            0 -> "Mes Listes"
-            else -> "Listes Partagées"
+            0 -> "My Lists"
+            else -> "Shared Lists"
         }
     }
 

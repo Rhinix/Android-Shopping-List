@@ -47,6 +47,9 @@ class LoginActivity : Activity(), ICommunicateData<User> {
         setListeners()
     }
 
+    /**
+     * Create dialog for no connection
+     */
     private fun createAlertDialog() {
 
         val builder = AlertDialog.Builder(this)
@@ -68,7 +71,9 @@ class LoginActivity : Activity(), ICommunicateData<User> {
             }
     }
 
-
+    /**
+     * Check if an account is registered on the device
+     */
     private fun checkForLoggedAccount() {
         var am = AccountManager.get(this)
         var accounts = am.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE)

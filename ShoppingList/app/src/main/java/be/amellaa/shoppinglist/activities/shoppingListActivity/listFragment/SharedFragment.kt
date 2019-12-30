@@ -9,6 +9,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.dto.DataFetcher
 
+/**
+ *  Fragment for shared list
+ */
 class SharedFragment : ListFragment() {
 
     lateinit var mFloatingButton: FloatingActionButton

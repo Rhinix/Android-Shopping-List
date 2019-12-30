@@ -11,6 +11,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import be.amellaa.shoppinglist.R
 
+/**
+ *  DialogFragment with a ListView, to display options on long click on a item
+ */
 class WithListDialogFragment(var idStringTitle: Int, val itemId: String) : DialogFragment(){
 
     private lateinit var listener: DialogListener

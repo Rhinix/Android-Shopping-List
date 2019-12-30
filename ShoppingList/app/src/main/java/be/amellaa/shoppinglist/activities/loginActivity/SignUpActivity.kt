@@ -71,7 +71,7 @@ class SignUpActivity : Activity(), ICommunicateCode {
 
         val user = User(email, password)
 
-        mDataFetcher.Signup(user)
+        mDataFetcher.signup(user)
     }
 
     private fun areFieldsValid(): Boolean {

@@ -9,6 +9,9 @@ import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.itemFragment.BaseItemFragment
 import be.amellaa.shoppinglist.models.ShoppingItem
 
+/**
+ *  Simple adapter for ShoppingItem in RecyclerView
+ */
 class ShoppingItemAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.Adapter<ShoppingItemAdapter.ListRowHolder>()
 {
 
@@ -29,6 +32,9 @@ class ShoppingItemAdapter(val values : ArrayList<ShoppingItem>) : RecyclerView.A
         );
     }
 
+    /**
+     *  Simple ViewHolder for ShoppingItem in a RecyclerView
+     */
     class ListRowHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(
         R.layout.holder_listitem, parent, false))
     {

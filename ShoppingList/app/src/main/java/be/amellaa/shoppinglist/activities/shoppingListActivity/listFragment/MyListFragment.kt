@@ -13,7 +13,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 /**
- *  Fragment for non-shared list
+ *  Fragment for non-shared list, who has a button to add list
  */
 class MyListFragment : ListFragment(), DialogListener {
 

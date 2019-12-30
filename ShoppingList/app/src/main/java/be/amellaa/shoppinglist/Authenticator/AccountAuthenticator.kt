@@ -14,6 +14,9 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import be.amellaa.shoppinglist.activities.loginActivity.LoginActivity
 
+/**
+ *  Class who manage if an account is already registered (in device settings)
+ */
 class AccountAuthenticator(context: Context) : AbstractAccountAuthenticator(context) {
 
     companion object {

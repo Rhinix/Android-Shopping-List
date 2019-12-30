@@ -7,6 +7,9 @@ import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.itemFragment.MyItemsFragment
 import be.amellaa.shoppinglist.activities.shoppingListActivity.itemFragment.SharedItemFragment
 
+/**
+ *  Activity that host a ItemFragment
+ */
 class ShoppingItemActivity: FragmentActivity() {
 
     var frag : Fragment? = supportFragmentManager.findFragmentById(R.id.shoppingitem_fragment_container)

@@ -9,7 +9,9 @@ import androidx.fragment.app.DialogFragment
 import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.shoppingListActivity.dialogfragment.WithEntryDialogFragment
 
-
+/**
+ *  Fragment for items in a list, the user owns
+ */
 class MyItemsFragment : BaseItemFragment(){
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
