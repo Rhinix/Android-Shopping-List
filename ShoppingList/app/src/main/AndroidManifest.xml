@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="be.amellaa.shoppinglist">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
         android:name="android.permission.AUTHENTICATE_ACCOUNTS"
         android:maxSdkVersion="22" />
@@ -9,6 +10,7 @@
         android:name="android.permission.GET_ACCOUNTS"
         android:maxSdkVersion="22" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -25,7 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.loginActivity.SignUpActivity"/>
+        <activity android:name=".activities.loginActivity.SignUpActivity" />
         <activity android:name=".activities.shoppingListActivity.ShoppingListActivity" />
         <activity android:name=".activities.shoppingListActivity.ShoppingItemActivity" />
 
@@ -41,6 +43,7 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" /> <!-- We haven't defined this -->
         </service>
+
 
     </application>
 

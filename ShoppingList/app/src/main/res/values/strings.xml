@@ -25,4 +25,8 @@
 
     <string name="account_type">ShoppingList</string>
 
+    <string name="network_connection">Connexion à internet</string>
+    <string name="network_connection_message">Vous devez être connecté à internet pour utiliser l\'application</string>
+    <string name="cancel">Cancel</string>
+    <string name="refresh">Refresh</string>
 </resources>

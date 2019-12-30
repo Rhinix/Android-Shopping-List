@@ -3,6 +3,7 @@ package be.amellaa.shoppinglist.activities.loginActivity
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,11 +11,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import be.amellaa.shoppinglist.Authenticator.AccountAuthenticator
 import be.amellaa.shoppinglist.ProgressDialog
 import be.amellaa.shoppinglist.R
+import be.amellaa.shoppinglist.utils.NetworkConnectionChecker
 import be.amellaa.shoppinglist.activities.shoppingListActivity.ShoppingListActivity
 import be.amellaa.shoppinglist.dto.DataFetcher
-import be.amellaa.shoppinglist.dto.ICommunicateCode
 import be.amellaa.shoppinglist.dto.ICommunicateData
 import be.amellaa.shoppinglist.dto.ShoppingListDTO
 import be.amellaa.shoppinglist.models.User
@@ -35,18 +37,44 @@ class LoginActivity : Activity(), ICommunicateData<User> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkForLoggedAccount()
+        if (!NetworkConnectionChecker.isNetworkAvailable(this)) {
+            createAlertDialog()
+        } else {
+            checkForLoggedAccount()
+        }
         setContentView(R.layout.login_layout)
         initializeComponent()
         setListeners()
     }
 
+    private fun createAlertDialog() {
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(R.string.network_connection)
+        builder.setCancelable(false)
+        builder.setMessage(R.string.network_connection_message)
+        builder.setPositiveButton(R.string.refresh) { _, _ -> }
+        builder.setNegativeButton(R.string.cancel) { _, _ -> finish() }
+
+        val dialog = builder.create()
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setOnClickListener { v ->
+                if (NetworkConnectionChecker.isNetworkAvailable(v.context)) {
+                    checkForLoggedAccount()
+                    changeActivity(v.context, LoginActivity::class.java)
+                }
+            }
+    }
+
+
     private fun checkForLoggedAccount() {
         var am = AccountManager.get(this)
-        var accounts = am.getAccountsByType("ShoppingList")
+        var accounts = am.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE)
 
         if (accounts.isNotEmpty()) {
-            ShoppingListDTO.instance.TOKEN = am.peekAuthToken(accounts[0], "Token")
+            ShoppingListDTO.TOKEN = am.peekAuthToken(accounts[0], AccountAuthenticator.TOKEN_TYPE)
             changeActivity(applicationContext, ShoppingListActivity::class.java)
         }
     }
@@ -105,11 +133,11 @@ class LoginActivity : Activity(), ICommunicateData<User> {
     }
 
     override fun communicateData(data: User) {
-        val account = Account(data.email, "ShoppingList")
+        val account = Account(data.email, AccountAuthenticator.ACCOUNT_TYPE)
         val am = AccountManager.get(this)
         am.addAccountExplicitly(account, data.password, null)
-        am.setAuthToken(account, "Token", data.Token)
-        ShoppingListDTO.instance.TOKEN = data.Token
+        am.setAuthToken(account, AccountAuthenticator.TOKEN_TYPE, data.Token)
+        ShoppingListDTO.TOKEN = data.Token
     }
 
 }
