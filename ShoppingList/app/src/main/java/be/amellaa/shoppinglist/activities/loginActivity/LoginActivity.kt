@@ -19,6 +19,9 @@ import be.amellaa.shoppinglist.dto.ICommunicateData
 import be.amellaa.shoppinglist.dto.ShoppingListDTO
 import be.amellaa.shoppinglist.models.User
 
+/**
+ *  Activity responsible for login users
+ */
 class LoginActivity : Activity(), ICommunicateData<User> {
 
 

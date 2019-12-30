@@ -10,6 +10,10 @@ import be.amellaa.shoppinglist.R
 import be.amellaa.shoppinglist.activities.TabAdapter
 import be.amellaa.shoppinglist.models.ShoppingList
 
+
+/**
+ *  A simple adapter for a recycler view
+ */
 class ShoppingListAdapter(val values : ArrayList<ShoppingList>) : RecyclerView.Adapter<ShoppingListAdapter.ListRowHolder>()
 {
 
@@ -30,6 +34,9 @@ class ShoppingListAdapter(val values : ArrayList<ShoppingList>) : RecyclerView.A
         );
     }
 
+    /**
+     *  A simple ViewHolder for a recycler view
+     */
     public class ListRowHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(
         R.layout.holder_shoppinglist, parent, false))
     {
@@ -48,6 +55,9 @@ class ShoppingListAdapter(val values : ArrayList<ShoppingList>) : RecyclerView.A
             }
         }
 
+        /**
+         *  Retrieve if the ViewHolder is from a shared list or not
+         */
         fun getKindOfList(context : Context) : String?{
             if(context is ShoppingListActivity){
                 val shoppingList : ShoppingListActivity  = context as ShoppingListActivity

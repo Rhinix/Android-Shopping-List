@@ -16,7 +16,9 @@ import android.accounts.AccountManager
 import android.util.Log
 import okhttp3.Response
 
-
+/**
+ *  Class responsible to talk with the web API
+ */
 class ShoppingListDTO {
 
     companion object {
@@ -31,9 +33,13 @@ class ShoppingListDTO {
         const val ARTICLE_URL = "/article/"
         var TOKEN = ""
 
-
+        /**
+         *  Return the client, with https compatibility
+         *  @return OkHttpClient
+         */
         private fun getOkHttpClient(): OkHttpClient {
             try {
+
                 val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
                     override fun checkClientTrusted(
                         chain: Array<java.security.cert.X509Certificate>,
@@ -70,6 +76,12 @@ class ShoppingListDTO {
         }
     }
 
+
+    /**
+     *  Call API to log in the user
+     *  @param user User
+     *  @param communicationInterface Interface de communication
+     */
     fun login(user: User, communicationInterface: ICommunicateData<User>) {
         val body = FormBody.Builder()
             .add("email", user.email)
@@ -101,6 +113,11 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to sign in the user
+     *  @param newUser User
+     *  @param communicationInterface Interface de communication
+     */
     fun signUp(newUser: User, communicationInterface: ICommunicateCode) {
         val body = FormBody.Builder()
             .add("email", newUser.email)
@@ -122,6 +139,10 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to retrieve user's non-shared list
+     *  @param communicationInterface Interface de communication
+     */
     fun getMyList(communicationInterface: ICommunicateData<ArrayList<ShoppingList>>) {
 
         val request = Request.Builder()
@@ -161,6 +182,10 @@ class ShoppingListDTO {
 
     }
 
+    /**
+     *  Call API to retrieve user's shared list
+     *  @param communicationInterface Interface de communication
+     */
     fun getSharedList(communicationInterface: ICommunicateData<ArrayList<ShoppingList>>) {
         val request = Request.Builder()
             .get()
@@ -198,6 +223,11 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to retrieve items from a list
+     *  @param id Id of the list
+     *  @param communicationInterface Interface de communication
+     */
     fun getItemFromList(
         id: String,
         communicationInterface: ICommunicateData<ArrayList<ShoppingItem>>
@@ -237,6 +267,11 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to create a new list
+     *  @param name Name of the list
+     *  @param communicationInterface Interface de communication
+     */
     fun createShoppingList(name: String, communicationInterface: ICommunicateCode) {
         var postData = JSONObject()
         postData.put("name", name)
@@ -262,6 +297,12 @@ class ShoppingListDTO {
 
     }
 
+    /**
+     *  Call API to update a list, identified by the id
+     *  @param name Name of the list
+     *  @param id Id of the list
+     *  @param communicationInterface Interface de communication
+     */
     fun patchList(name: String, id: String, communicationInterface: ICommunicateCode) {
         var postData = JSONObject()
         postData.put("name", name)
@@ -285,6 +326,11 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to delete a list, identified by the id
+     *  @param id Id of the list
+     *  @param communicationInterface Interface de communication
+     */
     fun deleteList(id: String, communicationInterface: ICommunicateCode) {
         val request = Request.Builder()
             .delete()
@@ -305,6 +351,11 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to delete an item, identified by the id
+     *  @param id Id of the item
+     *  @param communicationInterface Interface de communication
+     */
     fun deleteItem(id: String, communicationInterface: ICommunicateCode) {
         val request = Request.Builder()
             .delete()
@@ -325,6 +376,13 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to create an item, in a list
+     *  @param name Name of the item
+     *  @param qty Quantity of item
+     *  @param listId Id of the list
+     *  @param communicationInterface Interface de communication
+     */
     fun createItem(name: String, qty: String, listId: String, communicationInterface: ICommunicateCode){
         var postData = JSONObject()
         postData.put("listId", listId)
@@ -350,6 +408,14 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to update an item, identified by the id
+     *  @param name Name of the item
+     *  @param qty Quantity of item
+     *  @param checked If item is bought
+     *  @param id Id of the item
+     *  @param communicationInterface Interface de communication
+     */
     fun patchItem(name: String?, qty: String?, checked: Boolean?, id: String, communicationInterface: ICommunicateCode) {
         var postData = JSONObject()
         if(name != null){

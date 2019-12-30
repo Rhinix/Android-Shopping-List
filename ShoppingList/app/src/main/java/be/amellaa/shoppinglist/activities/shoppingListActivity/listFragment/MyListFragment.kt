@@ -11,6 +11,10 @@ import be.amellaa.shoppinglist.activities.shoppingListActivity.dialogfragment.Wi
 import be.amellaa.shoppinglist.dto.DataFetcher
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+
+/**
+ *  Fragment for non-shared list
+ */
 class MyListFragment : ListFragment(), DialogListener {
 
 
