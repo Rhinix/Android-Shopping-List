@@ -14,7 +14,7 @@ router.get("/MyLists", checkAuth, (req, res) => {
   ShoppingList.find()
     .where("owner")
     .equals(userId)
-    .select(" _id name articlesList")
+    .select(" _id name articlesList shareCode")
     .exec()
     .then(result => {
       if (result) {
@@ -25,7 +25,8 @@ router.get("/MyLists", checkAuth, (req, res) => {
           newShoppingList = {
             name: shoppingList.name,
             _id: shoppingList._id,
-            nbArticles: shoppingList.articlesList.length
+            nbArticles: shoppingList.articlesList.length,
+            shareCode: shoppingList.shareCode
           };
           shoppingListArray.push(newShoppingList);
         });
@@ -49,11 +50,10 @@ router.get("/SharedLists", checkAuth, (req, res) => {
   console.log(filter);
 
   ShoppingList.find(filter)
-    .select("_id name articlesList")
+    .select("_id name articlesList shareCode")
     .exec()
     .then(result => {
       if (result) {
-
         let shoppingListArray = [];
         let newShoppingList;
 
@@ -61,8 +61,10 @@ router.get("/SharedLists", checkAuth, (req, res) => {
           newShoppingList = {
             name: shoppingList.name,
             _id: shoppingList._id,
-            nbArticles: shoppingList.articlesList.length
+            nbArticles: shoppingList.articlesList.length,
+            shareCode: shoppingList.shareCode
           };
+
           shoppingListArray.push(newShoppingList);
         });
 
@@ -71,6 +73,24 @@ router.get("/SharedLists", checkAuth, (req, res) => {
         res.status(404).json({
           message: "there is no list"
         });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+});
+
+router.get("/Share/:listId", checkAuth, (req, res) => {
+  let id = req.params.listId;
+
+  ShoppingList.findById(id)
+    .select("ShareCode")
+    .exec()
+    .then(result => {
+      if (result) {
+        res.status(200).json(result);
+      } else {
+        res.status(404).json({ Message: "Not found" });
       }
     })
     .catch(err => {
@@ -99,12 +119,33 @@ router.get("/:listId", checkAuth, (req, res) => {
     });
 });
 
+router.post("/Share", checkAuth, (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const userId = jwt.decode(token).userId;
+
+  const sharedCode = req.body.sharedCode;
+  let filter = { ShareCode: sharedCode };
+
+  ShoppingList.updateOne(filter, { $push: { users: userId } })
+    .exec()
+    .then(result => {
+      if (result) {
+        res.status(200).json({ Message: "list shared" });
+      } else {
+        res.status(404).json({ Message: "Aucune liste trouvée" });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+});
+
 router.post("/", checkAuth, (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const userId = jwt.decode(token).userId;
 
   let listName = req.body.name;
-  let articlesList = req.body.articlesList||[];
+  let articlesList = req.body.articlesList || [];
 
   let newArticle;
   let ListArticles = [];
@@ -127,7 +168,8 @@ router.post("/", checkAuth, (req, res) => {
     owner: userId,
     user: [],
     name: listName,
-    articlesList: articlesList
+    articlesList: articlesList,
+    shareCode: listName + Math.floor(Math.random() * 10000 + 1)
   });
 
   shoppingList
@@ -231,7 +273,7 @@ router.patch("/:listId", checkAuth, (req, res) => {
           });
           Article.deleteMany({ _id: { $in: deletedArticles } }).exec();
         }*/
-        if(name){
+        if (name) {
           shoppingList.name = name;
           shoppingList.save();
         }

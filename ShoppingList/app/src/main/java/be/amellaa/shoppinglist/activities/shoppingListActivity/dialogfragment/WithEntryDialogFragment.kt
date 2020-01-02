@@ -17,7 +17,7 @@ class WithEntryDialogFragment(var idStringTitle: Int) : DialogFragment(){
     lateinit var mEditText : EditText
 
     fun setListener(listener: DialogListener){
-        this.listener = listener;
+        this.listener = listener
     }
 
     fun getName() : String{

@@ -8,6 +8,7 @@ const shoppingListSchema = mongoose.Schema({
     required: true,
     type: String
   },
+  shareCode: String,
   articlesList: [{ type: mongoose.Schema.Types.ObjectId, ref: "article" }]
 });
 

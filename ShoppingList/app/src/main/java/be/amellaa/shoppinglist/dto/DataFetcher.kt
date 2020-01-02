@@ -50,8 +50,12 @@ class DataFetcher {
      *  @param name Name of the list
      *  @param listId Id of the list
      */
-    fun renameShoppingList(name: String, listId: String){
+    fun renameShoppingList(name: String, listId: String) {
         ShoppingListDTO.instance.patchList(name, listId, communication)
+    }
+
+    fun share(shareCode: String) {
+        ShoppingListDTO.instance.share(shareCode, communication)
     }
 
     /**
@@ -86,7 +90,7 @@ class DataFetcher {
      *  @param qty Quantity of the item
      *  @param listId Id of the list
      */
-    fun addShoppingItem(name: String, qty: String, listId: String){
+    fun addShoppingItem(name: String, qty: String, listId: String) {
         ShoppingListDTO.instance.createItem(name, qty, listId, communication)
     }
 
@@ -105,7 +109,7 @@ class DataFetcher {
      *  @param qty Quantity of the item
      *  @param itemId Id of the item
      */
-    fun modifyShoppingItem(name: String, qty: String, itemId: String){
+    fun modifyShoppingItem(name: String, qty: String, itemId: String) {
         ShoppingListDTO.instance.patchItem(name, qty, false, itemId, communication)
     }
 
@@ -113,7 +117,7 @@ class DataFetcher {
      *  Delete an item, identified by the id
      *  @param itemId Id of the item
      */
-    fun deleteShoppingItem(itemId: String){
+    fun deleteShoppingItem(itemId: String) {
         ShoppingListDTO.instance.deleteItem(itemId, communication)
     }
 
@@ -139,7 +143,6 @@ class DataFetcher {
     fun signup(user: User) {
         ShoppingListDTO.instance.signUp(user, communication)
     }
-
 
 
 }
