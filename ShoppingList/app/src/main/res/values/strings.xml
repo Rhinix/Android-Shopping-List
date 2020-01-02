@@ -29,4 +29,9 @@
     <string name="network_connection_message">Vous devez être connecté à internet pour utiliser l\'application</string>
     <string name="cancel">Cancel</string>
     <string name="refresh">Refresh</string>
+
+    <string name="ShareCode">Code de partage</string>
+    <string name="share_code_dialog_copy_button">copier</string>
+
+    <string name="add_shared_list_dialog_title"></string>
 </resources>

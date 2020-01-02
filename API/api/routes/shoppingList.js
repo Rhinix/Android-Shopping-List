@@ -14,7 +14,7 @@ router.get("/MyLists", checkAuth, (req, res) => {
   ShoppingList.find()
     .where("owner")
     .equals(userId)
-    .select(" _id name articlesList")
+    .select(" _id name articlesList shareCode")
     .exec()
     .then(result => {
       if (result) {
@@ -25,7 +25,8 @@ router.get("/MyLists", checkAuth, (req, res) => {
           newShoppingList = {
             name: shoppingList.name,
             _id: shoppingList._id,
-            nbArticles: shoppingList.articlesList.length
+            nbArticles: shoppingList.articlesList.length,
+            shareCode: shoppingList.shareCode
           };
           shoppingListArray.push(newShoppingList);
         });
@@ -49,7 +50,7 @@ router.get("/SharedLists", checkAuth, (req, res) => {
   console.log(filter);
 
   ShoppingList.find(filter)
-    .select("_id name articlesList")
+    .select("_id name articlesList shareCode")
     .exec()
     .then(result => {
       if (result) {
@@ -60,8 +61,10 @@ router.get("/SharedLists", checkAuth, (req, res) => {
           newShoppingList = {
             name: shoppingList.name,
             _id: shoppingList._id,
-            nbArticles: shoppingList.articlesList.length
+            nbArticles: shoppingList.articlesList.length,
+            shareCode: shoppingList.shareCode
           };
+
           shoppingListArray.push(newShoppingList);
         });
 
@@ -165,7 +168,8 @@ router.post("/", checkAuth, (req, res) => {
     owner: userId,
     user: [],
     name: listName,
-    articlesList: articlesList
+    articlesList: articlesList,
+    shareCode: listName + Math.floor(Math.random() * 10000 + 1)
   });
 
   shoppingList

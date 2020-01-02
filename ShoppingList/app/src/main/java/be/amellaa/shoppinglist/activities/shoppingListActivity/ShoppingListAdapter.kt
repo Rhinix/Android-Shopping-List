@@ -14,20 +14,20 @@ import be.amellaa.shoppinglist.models.ShoppingList
 /**
  *  A simple adapter for a recycler view
  */
-class ShoppingListAdapter(val values : ArrayList<ShoppingList>) : RecyclerView.Adapter<ShoppingListAdapter.ListRowHolder>()
-{
+class ShoppingListAdapter(val values: ArrayList<ShoppingList>) :
+    RecyclerView.Adapter<ShoppingListAdapter.ListRowHolder>() {
 
     override fun getItemCount(): Int {
         return values.size;
     }
 
     override fun onBindViewHolder(holder: ListRowHolder, position: Int) {
-        val shoppingList : ShoppingList = values[position]
+        val shoppingList: ShoppingList = values[position]
         holder.bind(shoppingList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListRowHolder {
-        var layoutInflater : LayoutInflater = LayoutInflater.from(parent.context)
+        var layoutInflater: LayoutInflater = LayoutInflater.from(parent.context)
         return ListRowHolder(
             layoutInflater,
             parent
@@ -37,20 +37,24 @@ class ShoppingListAdapter(val values : ArrayList<ShoppingList>) : RecyclerView.A
     /**
      *  A simple ViewHolder for a recycler view
      */
-    public class ListRowHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(
-        R.layout.holder_shoppinglist, parent, false))
-    {
+    public class ListRowHolder(inflater: LayoutInflater, parent: ViewGroup) :
+        RecyclerView.ViewHolder(
+            inflater.inflate(
+                R.layout.holder_shoppinglist, parent, false
+            )
+        ) {
         lateinit var mShoppingList: ShoppingList
-        lateinit var mNameTextView : TextView
+        lateinit var mNameTextView: TextView
 
         init {
             mNameTextView = itemView.findViewById(R.id.shoppingListName)
             itemView.setOnClickListener { _ ->
                 val kind = getKindOfList(parent.context)
-                val intent : Intent = Intent(parent.context, ShoppingItemActivity::class.java)
+                val intent: Intent = Intent(parent.context, ShoppingItemActivity::class.java)
                 intent.putExtra("listKind", kind)
                 intent.putExtra("listId", mShoppingList.id)
                 intent.putExtra("listName", mShoppingList.name)
+                intent.putExtra("shareCode", mShoppingList.sharedCode)
                 parent.context.startActivity(intent)
             }
         }
@@ -58,24 +62,22 @@ class ShoppingListAdapter(val values : ArrayList<ShoppingList>) : RecyclerView.A
         /**
          *  Retrieve if the ViewHolder is from a shared list or not
          */
-        fun getKindOfList(context : Context) : String?{
-            if(context is ShoppingListActivity){
-                val shoppingList : ShoppingListActivity  = context as ShoppingListActivity
-                if(shoppingList.mViewPager.adapter is TabAdapter){
+        fun getKindOfList(context: Context): String? {
+            if (context is ShoppingListActivity) {
+                val shoppingList: ShoppingListActivity = context as ShoppingListActivity
+                if (shoppingList.mViewPager.adapter is TabAdapter) {
                     val adapter = shoppingList.mViewPager.adapter as TabAdapter
-                    return adapter.getItem(shoppingList.mTabLayout.selectedTabPosition).javaClass.simpleName
-                }
-                else {
+                    return adapter.getItem(shoppingList.mTabLayout.selectedTabPosition)
+                        .javaClass.simpleName
+                } else {
                     return "SharedFragment"
                 }
-            }
-            else {
+            } else {
                 return "SharedFragment"
             }
         }
 
-        fun bind(shoppingList: ShoppingList)
-        {
+        fun bind(shoppingList: ShoppingList) {
             mShoppingList = shoppingList
             mNameTextView.text = shoppingList.name;
         }

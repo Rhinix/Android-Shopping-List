@@ -169,6 +169,7 @@ class ShoppingListDTO {
                     newShoppingList.id = jsonObject.getString("_id")
                     newShoppingList.name = jsonObject.getString("name")
                     newShoppingList.nbArticles = jsonObject.getInt("nbArticles")
+                    newShoppingList.sharedCode = jsonObject.getString("shareCode")
                     newShoppingListArray.add(newShoppingList)
                 }
                 communicationInterface.communicateData(newShoppingListArray)
@@ -211,6 +212,12 @@ class ShoppingListDTO {
                     newShoppingList.id = jsonObject.getString("_id")
                     newShoppingList.name = jsonObject.getString("name")
                     newShoppingList.nbArticles = jsonObject.getInt("nbArticles")
+                    try {
+                        newShoppingList.sharedCode = jsonObject.getString("shareCode")
+                    } catch (exception: java.lang.Exception) {
+
+                    }
+
                     newShoppingListArray.add(newShoppingList)
                 }
                 communicationInterface.communicateData(newShoppingListArray)
@@ -383,7 +390,12 @@ class ShoppingListDTO {
      *  @param listId Id of the list
      *  @param communicationInterface Interface de communication
      */
-    fun createItem(name: String, qty: String, listId: String, communicationInterface: ICommunicateCode){
+    fun createItem(
+        name: String,
+        qty: String,
+        listId: String,
+        communicationInterface: ICommunicateCode
+    ) {
         var postData = JSONObject()
         postData.put("listId", listId)
         postData.put("name", name)
@@ -416,15 +428,21 @@ class ShoppingListDTO {
      *  @param id Id of the item
      *  @param communicationInterface Interface de communication
      */
-    fun patchItem(name: String?, qty: String?, checked: Boolean?, id: String, communicationInterface: ICommunicateCode) {
+    fun patchItem(
+        name: String?,
+        qty: String?,
+        checked: Boolean?,
+        id: String,
+        communicationInterface: ICommunicateCode
+    ) {
         var postData = JSONObject()
-        if(name != null){
+        if (name != null) {
             postData.put("name", name)
         }
-        if(qty != null){
+        if (qty != null) {
             postData.put("qty", qty)
         }
-        if(checked != null){
+        if (checked != null) {
             postData.put("checked", checked)
         }
         val body = RequestBody.create(MediaType.parse("application/json"), postData.toString())
@@ -432,6 +450,29 @@ class ShoppingListDTO {
             .patch(body)
             .header("Authorization", "bearer $TOKEN")
             .url(DOMAIN_URL + ARTICLE_URL + id)
+            .build()
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                val mMessage = e.message.toString()
+                Log.w("failure Response", mMessage)
+                //call.cancel();
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                communicationInterface.communicateCode(response.code())
+            }
+        })
+    }
+
+    fun share(shareCode: String, communicationInterface: ICommunicateCode) {
+        var postData = JSONObject()
+        postData.put("shareCode", shareCode)
+        val body = RequestBody.create(MediaType.parse("application/json"), postData.toString())
+        val request = Request.Builder()
+            .post(body)
+            .header("Authorization", "bearer $TOKEN")
+            .url("$DOMAIN_URL$SHOPPINGLIST_URL/Share")
             .build()
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
