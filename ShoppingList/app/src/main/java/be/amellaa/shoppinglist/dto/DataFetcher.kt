@@ -54,6 +54,11 @@ class DataFetcher {
         ShoppingListDTO.instance.patchList(name, listId, communication)
     }
 
+    /**
+     *  Add a share list, identified by his code
+     *  @param shareCode Code of the list, to share
+     */
+
     fun share(shareCode: String) {
         ShoppingListDTO.instance.share(shareCode, communication)
     }

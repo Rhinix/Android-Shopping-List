@@ -35,7 +35,7 @@ class SharedFragment : ListFragment(), DialogListener {
     }
 
     private fun showShareListDialog() {
-        val mWithEntryDialog = WithEntryDialogFragment(R.string.modifyShoppingListTitle)
+        val mWithEntryDialog = WithEntryDialogFragment(R.string.addSharedShoppingListTitle)
         mWithEntryDialog.setListener(this)
         mWithEntryDialog.show(fragmentManager, "ShareDialog")
     }

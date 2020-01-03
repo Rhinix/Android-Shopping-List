@@ -24,7 +24,7 @@ class ShoppingListDTO {
     companion object {
         val instance = ShoppingListDTO()
         val httpClient = getOkHttpClient()
-        const val DOMAIN_URL = "https://192.168.137.1:3000"
+        const val DOMAIN_URL = "https://192.168.1.38:3000"
         const val USER_LOGIN_URL = "/user/login/"
         const val USER_SIGNUP_URL = "/user/signup/"
         const val SHOPPINGLIST_URL = "/shoppingList/"
@@ -465,6 +465,11 @@ class ShoppingListDTO {
         })
     }
 
+    /**
+     *  Call API to add a share list, identified by his code
+     *  @param shareCode Code of the list, to share
+     *  @param communicationInterface Interface de communication
+     */
     fun share(shareCode: String, communicationInterface: ICommunicateCode) {
         var postData = JSONObject()
         postData.put("shareCode", shareCode)

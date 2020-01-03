@@ -15,23 +15,24 @@
     <string name="addShoppingListName">Name</string>
     <string name="addShoppingListTitle">New ShoppingList</string>
     <string name="modifyShoppingListTitle">Modify ShoppingList</string>
+    <string name="addSharedShoppingListTitle">Add a Shared List</string>
     <string name="addShoppingItemTitle">New ShoppingItem</string>
     <string name="addShoppingCancel">Cancel</string>
     <string name="addShoppingOk">Add</string>
     <string name="modifyShoppingItemTitle">Modify ShoppingItem</string>
-    <string name="dialogOptions">Options</string>
+    <string name="dialogOptions">Settings</string>
     <string name="loading">Loading...</string>
     <string name="addShoppingListQty">Quantity</string>
 
     <string name="account_type">ShoppingList</string>
 
-    <string name="network_connection">Connexion à internet</string>
-    <string name="network_connection_message">Vous devez être connecté à internet pour utiliser l\'application</string>
+    <string name="network_connection">Network Connexion</string>
+    <string name="network_connection_message">You must be connected with internet to use this application</string>
     <string name="cancel">Cancel</string>
     <string name="refresh">Refresh</string>
 
-    <string name="ShareCode">Code de partage</string>
-    <string name="share_code_dialog_copy_button">copier</string>
+    <string name="ShareCode">Sharing Code</string>
+    <string name="share_code_dialog_copy_button">Copy</string>
 
     <string name="add_shared_list_dialog_title"></string>
 </resources>
